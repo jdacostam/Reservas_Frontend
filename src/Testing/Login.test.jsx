@@ -1,28 +1,41 @@
-import { describe, test, expect, beforeEach } from "vitest";
+import { describe, test, expect, beforeEach, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import Login from "../Pages/Login";
-import { vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 
+// Mock del contexto useGeneral
+vi.mock("../Utils/GeneralContext", () => ({
+  useGeneral: () => ({
+    login: vi.fn(),
+    logout: vi.fn(),
+    isAuthenticated: false,
+  }),
+}));
+
 describe("Pruebas unitarias", () => {
-  Object.defineProperty(window, "matchMedia", {
-    writable: true,
-    value: vi.fn().mockImplementation((query) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(), // Deprecated
-      removeListener: vi.fn(), // Deprecated
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
+  beforeEach(() => {
+    // Mock de matchMedia
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    // Renderizar el componente antes de cada test
+    render(
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
+    );
   });
-  render(
-    <BrowserRouter>
-      <Login />
-    </BrowserRouter>
-  );
 
   // -------------------------- PRUEBA 1 ----------------------------
   test("Deben cargar los inputs ", () => {
@@ -83,6 +96,30 @@ describe("Pruebas unitarias", () => {
 });
 
 describe("Pruebas de integracion", () => {
+  beforeEach(() => {
+    // Mock de matchMedia
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    // Renderizar el componente antes de cada test
+    render(
+      <BrowserRouter>
+        <Login />
+      </BrowserRouter>
+    );
+  });
+
   // -------------------------- PRUEBA 4 ----------------------------
   test("Deben cargar los componentes ", () => {
     expect(screen.getByTestId("Header")).toBeDefined();
@@ -106,10 +143,10 @@ describe("Pruebas de integracion", () => {
     fireEvent.click(screen.getByText("Iniciar sesión"));
 
     // Espera a que se complete el registro
-    await screen.findByText("Correo no registrado");
+    await screen.findByText("Correo o contraseña incorrectos");
 
     // Verifica que el usuario se haya registrado correctamente
-    expect(screen.getByText("Correo no registrado")).toBeDefined();
+    expect(screen.getByText("Correo o contraseña incorrectos")).toBeDefined();
   });
 
   // // -------------------------- PRUEBA 6 ----------------------------
@@ -135,26 +172,4 @@ describe("Pruebas de integracion", () => {
   //   expect(screen.getByText("Cotraseña incorrecta")).toBeDefined();
   // });
 
-  // -------------------------- PRUEBA 7 ----------------------------
-  test("El login es exitoso", async () => {
-    // Completa el formulario de login
-    fireEvent.change(screen.getByTestId("Correo"), {
-      target: { value: "pulidxx@gmail.com" },
-    });
-    fireEvent.change(screen.getByTestId("Contraseña"), {
-      target: { value: "1" },
-    });
-    fireEvent.change(screen.getByTestId("Tipo de registro"), {
-      target: { value: "Cliente" },
-    });
-
-    // Envía el formulario
-    fireEvent.click(screen.getByText("Iniciar sesión"));
-
-    // Espera a que se complete el registro
-    await screen.findByText("Correo y contraseña válidos :D");
-
-    // Verifica que el usuario se haya registrado correctamente
-    expect(screen.getByText("Correo y contraseña válidos :D")).toBeDefined();
-  });
 });

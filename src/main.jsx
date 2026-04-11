@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 
 //import ProtectedRoutes from "./Utils/ProtectedRoutes.jsx";
+import LandingPage from "./Pages/LandingPage.jsx";
 import Login from "./Pages/Login.jsx";
 import Registro from "./Pages/Registro.jsx";
 import Reserva from "./Pages/Reserva.tsx";
@@ -30,8 +31,10 @@ import Externo from "./Pages/Externo.tsx";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
+      <Route path="/" element={<LandingPage />} />
+      
       <Route element={<PublicRoute />}>
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
       </Route>
 

@@ -1,6 +1,5 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import ThemeSwitcher from "../Components/ThemeSwitcher";
 import Image from "react-bootstrap/Image";
 import Alert from "react-bootstrap/Alert";
 import { useNavigate, Link } from "react-router-dom";
@@ -9,6 +8,8 @@ import { useState } from "react";
 import { ConversionEmail } from "../Classes/Adapter/conversionEmail";
 import Header from "../Classes/Header/Header";
 import { FachadaDeEstados } from "../Classes/Estados/Fachada/FachadaDeEstados";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function Registro() {
   const fachada = new FachadaDeEstados();
@@ -42,10 +43,27 @@ function Registro() {
     setLoading(true);
 
     try {
-      const { nombre, email, password, tipo, cedula, codigoEstudiantil } = cliente;
+      const { nombre, email, password, tipo, codigoEstudiantil } = cliente;
 
-      if (nombre.length > 45 || email.length > 45 || password.length > 45) {
-        setAlertText("Los campos no deben exceder 45 caracteres");
+      // Validaciones específicas de longitud
+      if (nombre.length > 45) {
+        setAlertText("El nombre es mayor a 45 caracteres");
+        setAlertState(fachada.cambioEstadoDeAlerta(1));
+        setShowAlert(fachada.cambioMostrarAlerta());
+        setLoading(false);
+        return;
+      }
+
+      if (email.length > 45) {
+        setAlertText("El correo es mayor a 45 caracteres");
+        setAlertState(fachada.cambioEstadoDeAlerta(1));
+        setShowAlert(fachada.cambioMostrarAlerta());
+        setLoading(false);
+        return;
+      }
+
+      if (password.length > 45) {
+        setAlertText("La contraseña es mayor a 45 caracteres");
         setAlertState(fachada.cambioEstadoDeAlerta(1));
         setShowAlert(fachada.cambioMostrarAlerta());
         setLoading(false);
@@ -59,7 +77,7 @@ function Registro() {
         codigoEstudiantil: tipo === "Estudiante" ? codigoEstudiantil : null,
       };
 
-      const res = await fetch("http://localhost:3000/usuario/crearUsuario", {
+      const res = await fetch(`${API_BASE_URL}/usuario/crearUsuario`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -75,7 +93,7 @@ function Registro() {
         setAlertText("Registro exitoso");
         setAlertState(fachada.cambioEstadoDeAlerta(0));
         setShowAlert(fachada.cambioMostrarAlerta());
-        setTimeout(() => navigate("/"), 500);
+        setTimeout(() => navigate("/login"), 500);
       }
 
       setLoading(false);
@@ -90,25 +108,27 @@ function Registro() {
   return (
     <>
       <Header />
+      <Alert
+        className="alert mt-5"
+        variant={alertState}
+        show={showAlert}
+        onClose={() => setShowAlert(fachada.cambioMostrarAlerta())}
+        dismissible
+      >
+        {alertText}
+      </Alert>
       <div className="text-center content">
-        <ThemeSwitcher />
-        <Alert
-          className="mt-5"
-          variant={alertState}
-          show={showAlert}
-          onClose={() => setShowAlert(fachada.cambioMostrarAlerta())}
-          dismissible
-        >
-          {alertText}
-        </Alert>
-
-        <Form style={{ width: "40%" }} onSubmit={clientSubmit}>
-          <Form.Group className="mb-4 mt-4" controlId="formLogo">
-            <Image className="logoCentral" src="/logo.png" fluid width="40%" />
-          </Form.Group>
-
+        <Form.Group className="mb-4 mt-5 pt-5" controlId="formBasicTipo">
+          <Image className="logoCentral" src="/logo.png" fluid width="22%" />
+        </Form.Group>
+        <Form onSubmit={clientSubmit} data-testid="Form">
           <Form.Group className="mb-3" controlId="formTipoUsuario">
-            <Form.Select onChange={handleSelect} value={cliente.tipo}>
+            <Form.Select 
+              style={{ width: "325px" }}
+              onChange={handleSelect} 
+              value={cliente.tipo} 
+              data-testid="Tipo de registro"
+            >
               <option value="">Selecciona tu rol</option>
               <option value="Estudiante">Estudiante</option>
               <option value="Profesor">Profesor</option>
@@ -120,36 +140,43 @@ function Registro() {
 
           <Form.Group className="mb-3" controlId="formNombre">
             <Form.Control
+              style={{ width: "325px" }}
               type="text"
               name="nombre"
               placeholder="Nombre"
               onChange={clientChange}
               value={cliente.nombre}
+              data-testid="Nombre"
             />
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formEmail">
             <Form.Control
+              style={{ width: "325px" }}
               type="email"
               name="email"
               placeholder="Correo electrónico"
               onChange={clientChange}
               value={cliente.email}
+              data-testid="Correo"
             />
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formPassword">
             <Form.Control
+              style={{ width: "325px" }}
               type="password"
               name="password"
               placeholder="Contraseña"
               onChange={clientChange}
               value={cliente.password}
+              data-testid="Contraseña"
             />
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formCedula">
             <Form.Control
+              style={{ width: "325px" }}
               type="text"
               name="cedula"
               placeholder="Cédula"
@@ -161,6 +188,7 @@ function Registro() {
           {cliente.tipo === "Estudiante" && (
             <Form.Group className="mb-3" controlId="formCodigoEstudiantil">
               <Form.Control
+                style={{ width: "325px" }}
                 type="text"
                 name="codigoEstudiantil"
                 placeholder="Código Estudiantil"
@@ -171,7 +199,6 @@ function Registro() {
           )}
 
           <Button
-            className="mt-3"
             variant="primary"
             type="submit"
             disabled={
@@ -182,19 +209,26 @@ function Registro() {
               !cliente.cedula ||
               (cliente.tipo === "Estudiante" && !cliente.codigoEstudiantil)
             }
+            data-testid="Registrarme"
           >
             {loading ? "Registrando..." : "Registrarme"}
           </Button>
         </Form>
-
         <Form.Group>
           <hr />
-          <Link to={"/"}>
-            <Button variant="outline-primary">Login</Button>
+          <Link to={"/login"}>
+            <Button variant="outline-primary">Ya tengo cuenta - Iniciar Sesión</Button>
+          </Link>
+          <Link to={"/"} className="d-block mt-3">
+            <Button
+              variant="outline-secondary"
+              className="btn-back-home"
+            >
+              ← Volver al inicio
+            </Button>
           </Link>
         </Form.Group>
       </div>
-      <br />
     </>
   );
 }

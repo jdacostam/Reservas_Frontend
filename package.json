@@ -8,7 +8,10 @@
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "test": "vitest --ui"
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -21,26 +24,28 @@
     "dayjs": "^1.11.13",
     "dependencies": "^0.0.1",
     "i": "^0.3.7",
-    "jsdom": "^22.1.0",
-    "next": "^15.3.3",
-    "react": "^18.2.0",
+    "next": "^15.3.8",
+    "react": "^19.2.3",
     "react-bootstrap": "^2.9.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "^19.2.3",
     "react-router-dom": "^6.16.0",
-    "react-select": "^5.10.1",
-    "vitest": "^0.34.6"
+    "react-select": "^5.10.1"
   },
   "devDependencies": {
-    "@testing-library/react": "^14.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.6.1",
     "@types/date-fns": "^2.5.3",
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.0.3",
-    "@vitest/ui": "^0.34.6",
+    "@vitest/ui": "^0.34.7",
     "eslint": "^8.45.0",
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
-    "vite": "^4.4.5"
+    "jsdom": "^27.1.0",
+    "vite": "^4.4.5",
+    "vitest": "^0.34.6"
   }
 }

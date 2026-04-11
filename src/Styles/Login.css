@@ -1,9 +1,222 @@
+.login-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: transparent;
+}
+
+.login-header nav,
+.login-header .navbar {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: none !important;
+    box-shadow: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3) !important;
+    backdrop-filter: blur(10px);
+}
+
+.login-header .navbar-brand {
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.login-header .nav-link,
+.login-header .dropdown-toggle {
+    color: #ffffff !important;
+    font-weight: 600;
+}
+
+.login-header .navbar-brand:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.login-header .nav-link:hover,
+.login-header .dropdown-toggle:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.login-header .dropdown-menu {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.login-header .dropdown-item {
+    color: #333;
+}
+
+.login-header .dropdown-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+}
+
 .alert {
-    position: absolute!important;
+    position: fixed !important;
     top: 5%;
     left: 50%;
-    translate: -50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 500px;
 }
-.logoCentral{
-    filter: invert(75%)
+
+.content {
+    min-height: 100vh;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) fixed;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 6rem 2rem 2rem;
+    overflow-y: auto;
+    margin: 0;
+}
+
+
+.content > * {
+    position: relative;
+    z-index: 1;
+}
+
+.prueba {
+    color: white;
+    font-size: 3rem;
+    font-weight: 700;
+    margin-top: 3rem;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.logoCentral {
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+    margin-bottom: 2rem;
+}
+
+form {
+    background: white;
+    padding: 3rem 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    min-width: 400px;
+    max-width: 500px;
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control,
+.form-select {
+    width: 100% !important;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    background: white;
+    outline: none;
+}
+
+.form-control::placeholder {
+    color: #999;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 0.875rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-outline-primary {
+    width: 100%;
+    padding: 0.875rem;
+    background: transparent;
+    border: 2px solid #667eea;
+    color: #ffffff;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+}
+
+.btn-back-home,
+.btn-outline-secondary {
+    width: 100%;
+    padding: 0.875rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-back-home:hover,
+.btn-outline-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-color: white;
+    transform: translateY(-2px);
+}
+
+form hr {
+    margin: 2rem 0 1.5rem;
+    border-color: #e0e0e0;
+}
+
+@media (max-width: 640px) {
+    form {
+        min-width: auto;
+        width: 100%;
+        max-width: 400px;
+        padding: 2rem 1.5rem;
+    }
+
+    .prueba {
+        font-size: 2rem;
+    }
+
+    .content {
+        padding: 1rem;
+    }
 }

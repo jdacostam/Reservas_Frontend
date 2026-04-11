@@ -12,11 +12,8 @@ import "../Styles/MisReservas.css";
 
 function MisReservas() {
   return (
-    <GeneralProvider>
+    
       <Container fluid className="align-items-center m-0 p-0">
-        <Row className="width-100vw">
-          <Header />
-        </Row>
 
         <Row className="width-100vw">
           <Col xs={{ span: 8, offset: 2 }}>
@@ -34,13 +31,10 @@ function MisReservas() {
           <ContenedorCartas tipo="materiales" />
         </GeneralProvider>
 
-        <Footer />
-
         <br />
         <br />
-
+    
       </Container>
-    </GeneralProvider>
     
   );
 }

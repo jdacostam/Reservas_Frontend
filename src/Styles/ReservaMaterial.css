@@ -39,4 +39,137 @@
   padding: 40px 0 20px !important;
 }
 
+.material-card-horizontal {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  padding: 1.5rem 2rem;
+  margin-top: 2rem;
+  color: #fff;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  animation: fadeIn 0.6s ease both;
+}
 
+.material-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 2rem;
+}
+
+/* Lado izquierdo */
+.material-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.material-title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.25rem;
+}
+
+.material-availability {
+  color: #81fbb8;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Lado derecho: divido en dos filas (cantidad y fecha) */
+.material-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.input-top,
+.input-bottom {
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.input-top label,
+.input-bottom label {
+  font-weight: 500;
+  color: #e2e8f0;
+  margin-bottom: 0.35rem;
+}
+
+.number,
+.dateMaterial {
+  background-color: #f8fafc;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem;
+  font-size: 1rem;
+  color: #111;
+  outline: none;
+}
+
+/* Botón confirmar */
+.confirmSection {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.btn-reserva {
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: #fff;
+  font-weight: 600;
+  padding: 0.9rem 2rem;
+  border: none;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.btn-reserva:hover {
+  background: linear-gradient(135deg, #1e40af, #6d28d9);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 15px rgba(124, 58, 237, 0.3);
+}
+
+/* Sin stock */
+.no-stock {
+  color: #fca5a5;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .material-content {
+    flex-direction: column;
+  }
+
+  .material-right {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .input-top,
+  .input-bottom {
+    flex: 1;
+  }
+}

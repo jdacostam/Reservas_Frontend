@@ -1,7 +1,26 @@
-.titleR{
-    transform: translateX(-35%);
+.titleR {
+  transform: translateX(-35%);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 30px 40px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
-.titleRL{
-    transform: translateX(5%);
+.titleR h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 0.5rem;
+  letter-spacing: -1px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.titleRL {
+  transform: translateX(5%);
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 400;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
 }

@@ -7,8 +7,7 @@ import ThemeSwitcher from '../Components/ThemeSwitcher';
 import FiltroReservas from '../Components/FiltroReservas';
 import { FiltrosReserva } from '../types/reserva.types';
 import CalendarioSemanal from '../Components/CalendarioSemanal';
-import "../Styles/Reserva.css";
-
+import '../Styles/Reserva.css';
 
 const ReservaPage: React.FC = () => {
   const [espacioSeleccionado, setEspacioSeleccionado] = useState<string | null>(null);
@@ -25,16 +24,11 @@ const ReservaPage: React.FC = () => {
   return (
     <GeneralProvider>
       <Container fluid className="align-items-center m-0 p-0 containerR">
-        <Row className="width-100vw">
-          <Header />
-        </Row>
-
         <Row className="width-100vw mt-5">
           <Col xs={{ span: 8, offset: 2 }}>
             <Row className="p-5">
-              <Col className="centered" data-testid="logo">
-              </Col>
-              <Col className='titleR'>
+              <Col className="centered" data-testid="logo"></Col>
+              <Col className="titleR">
                 <br />
                 <h1>Sistema de Reservas</h1>
                 <p className="titleRL text-muted">
@@ -47,19 +41,14 @@ const ReservaPage: React.FC = () => {
 
         <Row className="px-5 ">
           <Col md={{ span: 10, offset: 1 }}>
-            <Alert variant="info" className="mb-4 mt-5">
-              <strong>Instrucciones:</strong> Utiliza los filtros para encontrar el espacio ideal, 
-              selecciona una fecha y reserva el horario que necesites.
-            </Alert>
-            
-            <FiltroReservas 
+            <FiltroReservas
               onSelectEspacio={handleSelectEspacio}
               onFiltrosChange={handleFiltrosChange}
             />
-            
+
             {espacioSeleccionado && (
-              <CalendarioSemanal 
-                idEspacio={parseInt(espacioSeleccionado)} 
+              <CalendarioSemanal
+                idEspacio={parseInt(espacioSeleccionado)}
                 nombreEspacio={espacioSeleccionado}
               />
             )}
@@ -67,10 +56,6 @@ const ReservaPage: React.FC = () => {
         </Row>
         <br />
         <br />
-
-        <Footer />
-
-
       </Container>
     </GeneralProvider>
   );

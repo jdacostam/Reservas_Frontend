@@ -1,28 +1,32 @@
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, beforeEach, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import Registro from "../Pages/Registro";
-import { vi } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 
 describe("Pruebas unitarias", () => {
-  Object.defineProperty(window, "matchMedia", {
-    writable: true,
-    value: vi.fn().mockImplementation((query) => ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addListener: vi.fn(), // Deprecated
-      removeListener: vi.fn(), // Deprecated
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn(),
-      dispatchEvent: vi.fn(),
-    })),
+  beforeEach(() => {
+    // Mock de matchMedia
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    // Renderizar el componente antes de cada test
+    render(
+      <BrowserRouter>
+        <Registro />
+      </BrowserRouter>
+    );
   });
-  render(
-    <BrowserRouter>
-      <Registro />
-    </BrowserRouter>
-  );
 
   // -------------------------- PRUEBA 1 ----------------------------
   test("Deben cargar los inputs ", () => {
@@ -36,6 +40,9 @@ describe("Pruebas unitarias", () => {
   // -------------------------- PRUEBA 2 ----------------------------
   test("No se recibe un nombre con mas de 45 caracteres", async () => {
     // Completa el formulario de registro
+    fireEvent.change(screen.getByTestId("Tipo de registro"), {
+      target: { value: "Profesor" },
+    });
     fireEvent.change(screen.getByTestId("Nombre"), {
       target: { value: "1234567890123456789012345678901234567890123456" },
     });
@@ -45,8 +52,8 @@ describe("Pruebas unitarias", () => {
     fireEvent.change(screen.getByTestId("Contraseña"), {
       target: { value: "123456" },
     });
-    fireEvent.change(screen.getByTestId("Tipo de registro"), {
-      target: { value: "Cliente" },
+    fireEvent.change(screen.getByPlaceholderText("Cédula"), {
+      target: { value: "123456789" },
     });
     // Envía el formulario
     fireEvent.click(screen.getByTestId("Registrarme"));
@@ -61,6 +68,9 @@ describe("Pruebas unitarias", () => {
   // -------------------------- PRUEBA 3 ----------------------------
   test("No se recibe un correo con mas de 45 caracteres", async () => {
     // Completa el formulario de registro
+    fireEvent.change(screen.getByTestId("Tipo de registro"), {
+      target: { value: "Profesor" },
+    });
     fireEvent.change(screen.getByTestId("Nombre"), {
       target: { value: "Juan Perez" },
     });
@@ -70,8 +80,8 @@ describe("Pruebas unitarias", () => {
     fireEvent.change(screen.getByTestId("Contraseña"), {
       target: { value: "123456" },
     });
-    fireEvent.change(screen.getByTestId("Tipo de registro"), {
-      target: { value: "Cliente" },
+    fireEvent.change(screen.getByPlaceholderText("Cédula"), {
+      target: { value: "123456789" },
     });
     // Envía el formulario
     fireEvent.click(screen.getByTestId("Registrarme"));
@@ -86,6 +96,9 @@ describe("Pruebas unitarias", () => {
   // -------------------------- PRUEBA 4 ----------------------------
   test("No se recibe una contraseña con mas de 45 caracteres", async () => {
     // Completa el formulario de registro
+    fireEvent.change(screen.getByTestId("Tipo de registro"), {
+      target: { value: "Profesor" },
+    });
     fireEvent.change(screen.getByTestId("Nombre"), {
       target: { value: "Juan Perez" },
     });
@@ -95,8 +108,8 @@ describe("Pruebas unitarias", () => {
     fireEvent.change(screen.getByTestId("Contraseña"), {
       target: { value: "1234567890123456789012345678901234567890123456" },
     });
-    fireEvent.change(screen.getByTestId("Tipo de registro"), {
-      target: { value: "Cliente" },
+    fireEvent.change(screen.getByPlaceholderText("Cédula"), {
+      target: { value: "123456789" },
     });
     // Envía el formulario
     fireEvent.click(screen.getByTestId("Registrarme"));
@@ -110,6 +123,30 @@ describe("Pruebas unitarias", () => {
 });
 
 describe("Pruebas de integracion", () => {
+  beforeEach(() => {
+    // Mock de matchMedia
+    Object.defineProperty(window, "matchMedia", {
+      writable: true,
+      value: vi.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      })),
+    });
+
+    // Renderizar el componente antes de cada test
+    render(
+      <BrowserRouter>
+        <Registro />
+      </BrowserRouter>
+    );
+  });
+
   // -------------------------- PRUEBA 6 ----------------------------
   test("Deben cargar los componentes ", () => {
     expect(screen.getByTestId("Header")).toBeDefined();

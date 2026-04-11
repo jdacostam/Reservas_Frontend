@@ -1,0 +1,65 @@
+.pag-usuario-wrapper {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-attachment: fixed;
+  width: 100%;
+}
+
+.pag-usuario-content {
+  min-height: calc(100vh - 150px);
+  padding: 2rem 0;
+}
+
+.pag-usuario-wrapper .navbar {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: none !important;
+  box-shadow: none;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.pag-usuario-wrapper .navbar-brand {
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.pag-usuario-wrapper .nav-link,
+.pag-usuario-wrapper .dropdown-toggle {
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.pag-usuario-wrapper .navbar-brand:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.pag-usuario-wrapper .nav-link:hover,
+.pag-usuario-wrapper .dropdown-toggle:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.pag-usuario-wrapper .dropdown-menu {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.pag-usuario-wrapper .dropdown-item {
+  color: #333;
+}
+
+.pag-usuario-wrapper .dropdown-item:hover {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.pag-usuario-wrapper footer {
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 2px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}

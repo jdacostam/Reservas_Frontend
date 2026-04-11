@@ -2,12 +2,6 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 const GeneralContext = createContext();
 
-const AUTH_KEYS = ["email", "username", "tipoUsuario"];
-
-const clearAuthStorage = () => {
-  AUTH_KEYS.forEach((key) => localStorage.removeItem(key));
-};
-
 export const GeneralProvider = ({ children }) => {
   const [show2, setShow2] = useState(false);
   const [show, setShow] = useState(false);
@@ -17,34 +11,27 @@ export const GeneralProvider = ({ children }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [authChecked, setAuthChecked] = useState(false); 
   const [userEmail, setUserEmail] = useState(null);
+  const [userType, setUserType] = useState(null);
 
   useEffect(() => {
     const email = localStorage.getItem("email");
-    const username = localStorage.getItem("username");
-    const tipoUsuario = localStorage.getItem("tipoUsuario");
-
-    if (email && username && tipoUsuario) {
+    const type = localStorage.getItem("tipoUsuario");
+    if (email) {
       setUserEmail(email);
-    } else {
-      clearAuthStorage();
-      setUserEmail(null);
+    }
+    if (type) {
+      setUserType(type);
     }
     setAuthChecked(true); 
   }, []);
 
-  const login = (email, username, tipoUsuario) => {
+  const login = (email) => {
     localStorage.setItem("email", email);
-    if (username) {
-      localStorage.setItem("username", username);
-    }
-    if (tipoUsuario) {
-      localStorage.setItem("tipoUsuario", tipoUsuario);
-    }
     setUserEmail(email);
   };
 
   const logout = () => {
-    clearAuthStorage();
+    localStorage.removeItem("email");
     setUserEmail(null);
   };
 
@@ -82,6 +69,7 @@ export const GeneralProvider = ({ children }) => {
         setEstampadoElegido,
         selectedImage,
         userEmail,
+        userType,
         login,
         logout,
         authChecked

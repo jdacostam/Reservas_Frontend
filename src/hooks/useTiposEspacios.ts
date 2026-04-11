@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 export interface TipoEspacio {
   tipo: string;
   cantidad: number;
@@ -17,14 +19,14 @@ export const useTiposEspacios = () => {
         setError(null);
 
         // Primero obtenemos todos los espacios
-        const response = await fetch('/api/espacios');
-        
+        const response = await fetch(`${API_BASE_URL}/espacios`);
+
         if (!response.ok) {
           throw new Error(`Error ${response.status}: ${response.statusText}`);
         }
-        
+
         const espacios = await response.json();
-        
+
         // Agrupamos por tipo y contamos
         const tiposCount = espacios.reduce((acc: Record<string, number>, espacio: any) => {
           const tipo = espacio.tipo;
@@ -38,7 +40,6 @@ export const useTiposEspacios = () => {
           .sort((a, b) => a.tipo.localeCompare(b.tipo));
 
         setTipos(tiposArray);
-        
       } catch (err) {
         console.error('Error fetching tipos de espacios:', err);
         setError(err instanceof Error ? err.message : 'Error desconocido');

@@ -1,20 +1,27 @@
 import React, { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import { Col, Card, Badge, Button, Form } from "react-bootstrap";
+import { Col, Card, Badge, Button } from "react-bootstrap";
 import { GeneralProvider } from "../Utils/GeneralContext";
-import Footer from "../Components/Footer";
-import Header from "../Classes/Header/Header";
-import ContenedorCartas from "../Components/ContenedorCartas";
+import FiltroGestionReservas from "../Components/FiltroGestionReservas";
 import "../Styles/Gestion.css";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function GestionReserva() {
   const [reservas, setReserva] = useState([]);
+  const [filtros, setFiltros] = useState({ email: "", id: "", estado: "" });
+
+  // Modal states
+  const [mostrarModal, setMostrarModal] = useState(false);
+  const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
+  const [nuevoEstado, setNuevoEstado] = useState("");
+  const [mostrarModalObs, setMostrarModalObs] = useState(false);
+  const [textoObs, setTextoObs] = useState("");
 
   const obtenerReservas = async () => {
     try {
-      const response = await fetch("http://localhost:3000/reservas");
+      const response = await fetch(`${API_BASE_URL}/reservas`);
       if (!response.ok)
         throw new Error("Error al obtener espacios reservados");
       const data = await response.json();
@@ -24,138 +31,251 @@ function GestionReserva() {
     }
   };
 
-  //Actualizar el estado de un material
-  const [mostrarModal, setMostrarModal] = useState(false);
-  const [reservaSeleccionada, setReservaSeleccionada] = useState(null);
-  const [nuevoEstado, setNuevoEstado] = useState("Pendiente");
-
-  //Filtro
-  const [filtroEmail, setFiltroEmail] = useState("");
-  const [filtroId, setFiltroId] = useState("");
-  const [filtroEstado, setFiltroEstado] = useState("");
-
-  const reservasFiltradas = reservas.filter((reserva) => {
-    const coincideEmail =
-      filtroEmail === "" ||
-      reserva.usuario.email.toLowerCase().includes(filtroEmail.toLowerCase());
-    const coincideId = filtroId === "" || reserva.id.toString() === filtroId;
-    const coincideEstado =
-      filtroEstado === "" || reserva.estado === filtroEstado;
-    return coincideEmail && coincideId && coincideEstado;
-  });
-
   useEffect(() => {
     obtenerReservas();
   }, []);
 
+  // Filtrado visual
+  const reservasFiltradas = reservas.filter((reserva) => {
+    const coincideEmail =
+      filtros.email === "" ||
+      reserva.usuario.email.toLowerCase().includes(filtros.email.toLowerCase());
+    const coincideId = filtros.id === "" || reserva.id.toString() === filtros.id;
+    const coincideEstado =
+      filtros.estado === "" || reserva.estado.toLowerCase() === filtros.estado.toLowerCase();
+    return coincideEmail && coincideId && coincideEstado;
+  });
+
+  // Traducción de estados para mostrar y guardar
+  const mostrarEstado = (estado) => {
+    if (estado === "Activa" || estado === "activa") return "Activa";
+    if (estado === "Completada" || estado === "completada") return "Completada";
+    // Compatibilidad con datos antiguos
+    if (estado === "Entregado" || estado === "entregado") return "Activa";
+    if (estado === "Devuelto" || estado === "devuelto") return "Completada";
+    return estado;
+  };
+
+  const colorEstado = (estado) => {
+    if (mostrarEstado(estado) === "Activa") return "warning";
+    if (mostrarEstado(estado) === "Completada") return "success";
+    return "secondary";
+  };
+
   return (
-    <>
-      <Container fluid className="align-items-center m-0 p-0">
-        <Row className="width-100vw">
+    <GeneralProvider>
+      <Container fluid className="align-items-center m-0 p-0 containerR">
+        <Row className="width-100vw mt-0">
           <Col xs={{ span: 8, offset: 2 }}>
-            <Row width="100%" className="p-4 mb-2">
-              <Col>
-                <h1 className="text-center">Gestión de Reservas</h1>
-                <div className="profileG-divider"></div>
+            <Row className="p-5">
+              <Col className="centered" data-testid="logo"></Col>
+              <Col className="titleR">
+                <br />
+                <h1>Gestión de Reservas</h1>
+                <p className="titleRL text-muted">
+                  Visualiza y administra todas las reservas del sistema
+                </p>
               </Col>
             </Row>
           </Col>
         </Row>
-        <Form className="formGM border rounded">
-          <Row>
-            <Col md={4}>
-              <Form.Group controlId="filtroEmail">
-                <Form.Label>Email del usuario</Form.Label>
-                <Form.Control
-                  className="placeH"
-                  style={{ background: "white", color: "black" }}
-                  type="text"
-                  placeholder="ej. usuario@email.com"
-                  value={filtroEmail}
-                  onChange={(e) => setFiltroEmail(e.target.value)}
-                />
-              </Form.Group>
+        <Row className="px-5">
+          <Col md={{ span: 10, offset: 1 }}>
+            <h4 className="text-center">
+              <strong>Instrucciones:</strong> Usa los filtros para buscar reservas por usuario, ID o estado.
+            </h4>
+            <FiltroGestionReservas onFiltrosChange={setFiltros} estados={["Activa", "Completada"]} />
+          </Col>
+        </Row>
+        <Row className="materiales-lista px-5">
+          {reservasFiltradas.length === 0 && (
+            <Col className="text-center mt-4">
+              <p className="h5 text-muted">No hay reservas que coincidan con los filtros.</p>
             </Col>
-
-            <Col md={4}>
-              <Form.Group controlId="filtroId">
-                <Form.Label>ID de reserva</Form.Label>
-                <Form.Control
-                  className="placeH"
-                  style={{ background: "white", color: "black" }}
-                  type="text"
-                  placeholder="ej. 5"
-                  value={filtroId}
-                  onChange={(e) => setFiltroId(e.target.value)}
-                />
-              </Form.Group>
-            </Col>
-
-            <Col md={4}>
-              <Form.Group controlId="filtroEstado">
-                <Form.Label>Estado</Form.Label>
-                <Form.Select
-                  style={{ background: "white", color: "black" }}
-                  value={filtroEstado}
-                  onChange={(e) => setFiltroEstado(e.target.value)}
-                >
-                  <option value="">Todos</option>
-                  <option value="Pendiente">Pendiente</option>
-                  <option value="Entregado">Entregado</option>
-                  <option value="Devuelto">Devuelto</option>
-                </Form.Select>
-              </Form.Group>
-            </Col>
-          </Row>
-        </Form>
-        <Col className="materiales-lista centered ">
+          )}
           {reservasFiltradas.map((reserva, index) => (
-            <Card
-              style={{ width: "275px", margin: "30px 20px"}}
-              key={index}
-              className="mb-3"
-            >
-              <Card.Header className="text-center">{reserva.id}</Card.Header>
-              <Card.Body>
-                <Card.Text>
-                  <strong>Reserva: </strong> {reserva.calendario.espacio.nombre}
-                  <br />
-                  <strong>Nombre: </strong> {reserva.usuario.nombre}
-                  <br />
-                  <strong>Fecha: </strong> {reserva.calendario.fecha}
-                  <br />
-                  <strong>Inicio: </strong> {reserva.calendario.horaInicio}
-                  <br />
-                  <strong>Fin: </strong> {reserva.calendario.horaFin}
-                </Card.Text>
-                <hr />
-                <Card.Text><strong>Estado: </strong> <span style={{textTransform:"uppercase", letterSpacing:"2px"}}>{reserva.estado}</span></Card.Text>
-              </Card.Body>
-
-              <div className="text-center" style={{ marginBottom: "10px" }}>
-                {reserva.estado === "completada" && (
-                  <Button
-                    variant="primary"
-                    style={{ width: "150px" }}
-                    className="oservaciones"
-                    onClick={() => {
-                      setReservaSeleccionada(reserva);
-                      setMostrarModal(true);
-                    }}
-                  >
-                    Observaciones
-                  </Button>
-                )}
-              </div>
-            </Card>
+            <Col key={index} xs={12} sm={6} md={4} lg={3} className="d-flex justify-content-center">
+              <Card className="mb-3 creative-card" style={{ width: "100%", minWidth: "270px", maxWidth: "320px" }}>
+                <Card.Header className="text-center" style={{ background: "#4f8cff", color: "#fff", fontWeight: 700 }}>
+                  <span>Reserva #{reserva.id}</span>
+                </Card.Header>
+                <Card.Body>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div style={{
+                      background: "#e3edff",
+                      borderRadius: "50%",
+                      width: "48px",
+                      height: "48px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "1.7rem"
+                    }}>
+                      🗓️
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 600, color: "#4f8cff" }}>{reserva.calendario.espacio.nombre}</div>
+                      <div style={{ fontSize: "0.95rem", color: "#2d3a4b" }}>
+                        {reserva.calendario.fecha} <br />
+                        {reserva.calendario.horaInicio} - {reserva.calendario.horaFin}
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div style={{ fontSize: "0.97rem" }}>
+                    <strong>Usuario:</strong> {reserva.usuario.nombre} <br />
+                    <strong>Email:</strong> {reserva.usuario.email}
+                  </div>
+                  <div style={{ marginTop: "10px" }}>
+                    <Badge
+                      bg={colorEstado(reserva.estado)}
+                      style={{
+                        fontSize: "0.95rem",
+                        padding: "7px 16px",
+                        borderRadius: "12px",
+                        letterSpacing: "1px",
+                        textTransform: "uppercase"
+                      }}
+                    >
+                      {mostrarEstado(reserva.estado)}
+                    </Badge>
+                  </div>
+                </Card.Body>
+                <div className="text-center" style={{ paddingBottom: "20px" }}>
+                  {mostrarEstado(reserva.estado) !== "Completada" && (
+                    <Button
+                      variant="primary"
+                      style={{ width: "200px", boxShadow: "0 0 12px rgba(36, 63, 198, 0.51)" }}
+                      className="actualizarEstado"
+                      onClick={() => {
+                        setReservaSeleccionada(reserva);
+                        setNuevoEstado(mostrarEstado(reserva.estado));
+                        setMostrarModal(true);
+                      }}
+                    >
+                      Actualizar estado
+                    </Button>
+                  )}
+                  {mostrarEstado(reserva.estado) === "Completada" && (
+                    <Button
+                      variant="secondary"
+                      style={{ width: "200px", boxShadow: "0 0 12px rgba(94, 95, 97, 0.53)" }}
+                      className="observaciones"
+                      onClick={() => {
+                        setReservaSeleccionada(reserva);
+                        setTextoObs(reserva.observacionesEntrega || "");
+                        setMostrarModalObs(true);
+                      }}
+                    >
+                      Observaciones
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            </Col>
           ))}
-        </Col>
-        <br />
-        <br />
-        <br />
+        </Row>
+        {/* Modal: Actualizar Estado */}
+        {mostrarModal && (
+          <div className="modalOverlay">
+            <div className="modalContent">
+              <h5 className="titleUp text-center">
+                Actualizar estado para la reserva #{reservaSeleccionada?.id}
+              </h5>
+              <select
+                value={nuevoEstado}
+                className="selectUp form-select"
+                onChange={(e) => setNuevoEstado(e.target.value)}
+              >
+                <option value="">Seleccione el estado</option>
+                <option value="activa">Activa</option>
+                <option value="completada">Completada</option>
+              </select>
+              <div className="mt-3 d-flex justify-content-evenly">
+                <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+                  Cancelar
+                </Button>
+                <Button
+                  variant="success"
+                  onClick={async () => {
+                    try {
+                      // Guarda el estado como Activa/Completada
+                      const response = await fetch(
+                        `${API_BASE_URL}/reservas/${reservaSeleccionada.id}`,
+                        {
+                          method: "PATCH",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({ estado: nuevoEstado }),
+                        }
+                      );
+                      if (!response.ok) throw new Error("Error al actualizar el estado");
+                      await obtenerReservas();
+                      setMostrarModal(false);
+                      alert("Estado actualizado correctamente");
+                    } catch (error) {
+                      console.error("Error actualizando estado:", error);
+                      alert("Error al actualizar el estado: " + error);
+                    }
+                  }}
+                >
+                  Actualizar
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
+        {/* Modal: Observaciones */}
+        {mostrarModalObs && (
+          <div className="modalOverlay">
+            <div className="modalContent">
+              <h5 className="titleUpCom text-center">
+                Observaciones para la reserva #{reservaSeleccionada?.id}
+              </h5>
+              <textarea
+                className="form-control mt-3"
+                rows={4}
+                value={textoObs}
+                onChange={(e) => setTextoObs(e.target.value)}
+              />
+              <div className="mt-3 d-flex justify-content-evenly">
+                <Button variant="secondary" onClick={() => setMostrarModalObs(false)}>
+                  Cancelar
+                </Button>
+                <Button
+                  variant="success"
+                  onClick={async () => {
+                    try {
+                      const res = await fetch(
+                        `${API_BASE_URL}/reservas/${reservaSeleccionada.id}`,
+                        {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ observacionesEntrega: textoObs }),
+                        }
+                      );
+                      if (!res.ok) throw new Error("Error guardando observación");
+                      await obtenerReservas();
+                      setMostrarModalObs(false);
+                      alert("Observación guardada correctamente");
+                    } catch (err) {
+                      console.error("Error guardando observación:", err);
+                      alert("Error guardando observación: " + err);
+                    }
+                  }}
+                >
+                  Guardar
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+        <br />
+        <br />
       </Container>
-    </>
+    </GeneralProvider>
   );
 }
 

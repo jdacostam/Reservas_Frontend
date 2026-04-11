@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Row } from "react-bootstrap";
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 function Usuario() {
   const email = localStorage.getItem("email");
   const [usuario, setUsuario] = useState(null);
@@ -14,7 +15,7 @@ function Usuario() {
   const obtenerUsuario = async (email) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/usuario/consultarEmail/${email}`
+        `${API_BASE_URL}/usuario/consultarEmail/${email}`
       );
       if (!response.ok) throw new Error("Error al obtener usuario");
       const json = await response.json();

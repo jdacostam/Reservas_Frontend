@@ -1,126 +1,195 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { Form, Row, Col, Button } from "react-bootstrap";
-import { useEspacios } from "../hooks/useEspacios";
-import { FiltrosReserva } from "../types/reserva.types";
+import React, { useState, useMemo, useEffect } from 'react';
+import { useEspacios } from '../hooks/useEspacios';
+import { FiltrosReserva } from '../types/reserva.types';
+import './FiltroReservas.css';
 
 interface Props {
   onSelectEspacio: (espacioId: string | null) => void;
   onFiltrosChange?: (filtros: FiltrosReserva) => void;
 }
 
-const FiltroReservas: React.FC<Props> = ({
-  onSelectEspacio,
-  onFiltrosChange,
-}) => {
-  const [tipoUsuairo, setTipoUsuario] = useState("");
-  const email = localStorage.getItem("email");
-  // Estado de filtros locales
-  const [filtros, setFiltros] = useState<FiltrosReserva>({});
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-  // Obtener todos los espacios (el backend no soporta filtros)
+const FiltroReservas: React.FC<Props> = ({ onSelectEspacio, onFiltrosChange }) => {
+  const [tipoUsuario, setTipoUsuario] = useState('');
+  const email = localStorage.getItem('email');
+  const [filtros, setFiltros] = useState<FiltrosReserva>({});
+  const [selectedEspacio, setSelectedEspacio] = useState<string>('');
+
   const { espacios, loading, error } = useEspacios();
 
-  // Aplicar filtro en el cliente según el tipo de espacio seleccionado
   const espaciosFiltrados = useMemo(() => {
-    if (!filtros.tipoEspacio) if (tipoUsuairo == "Profesor") return espacios;
+    if (!filtros.tipoEspacio) {
+      return tipoUsuario === 'Profesor' ? espacios : espacios;
+    }
     return espacios.filter((espacio) => espacio.tipo === filtros.tipoEspacio);
-  }, [espacios, filtros.tipoEspacio]);
+  }, [espacios, filtros.tipoEspacio, tipoUsuario]);
 
-  // Manejo de cambio en filtros
   const handleFiltroChange = (campo: string, valor: any) => {
     const nuevosFiltros = { ...filtros, [campo]: valor };
     setFiltros(nuevosFiltros);
     onFiltrosChange?.(nuevosFiltros);
-    onSelectEspacio(null); // Reset espacio seleccionado al cambiar tipo
+    onSelectEspacio(null);
+    setSelectedEspacio('');
   };
 
-  // Limpiar filtros y selección
+  const handleEspacioChange = (espacioId: string) => {
+    setSelectedEspacio(espacioId);
+    onSelectEspacio(espacioId || null);
+  };
+
   const limpiarFiltros = () => {
     setFiltros({});
+    setSelectedEspacio('');
     onSelectEspacio(null);
     onFiltrosChange?.({});
   };
 
-  //Mostra auditorio al profesor unicamente
-
-  const obtenerUsuario = async (email) => {
+  const obtenerUsuario = async (email: string | null) => {
+    if (!email) return;
     try {
-      const response = await fetch(
-        `http://localhost:3000/usuario/consultarEmail/${email}`
-      );
-      if (!response.ok) throw new Error("Error al obtener usuario");
+      const response = await fetch(`${API_BASE_URL}/usuario/consultarEmail/${email}`);
+      if (!response.ok) throw new Error('Error al obtener usuario');
       const json = await response.json();
-      const usuario = json;
-      setTipoUsuario(usuario.tipo);
+      setTipoUsuario(json.tipo);
     } catch (error) {
-      console.error("Error al obtener usuario:", error);
+      console.error('Error al obtener usuario:', error);
     }
   };
 
   useEffect(() => {
     obtenerUsuario(email);
-  }, []);
+  }, [email]);
+
+  const tiposEspacio = [
+    { value: 'Aula', label: 'Aula', icon: 'fa-chalkboard' },
+    { value: 'Laboratorio de Computación', label: 'Lab. Computación', icon: 'fa-laptop-code' },
+    { value: 'Laboratorio de Física', label: 'Lab. Física', icon: 'fa-flask' },
+    ...(tipoUsuario === 'Profesor'
+      ? [{ value: 'Auditorio', label: 'Auditorio', icon: 'fa-users' }]
+      : []),
+  ];
 
   return (
-    <Form className="mb-4 p-3 border rounded">
-      {/* Filtro por tipo de espacio */}
-      <Row className="mb-3">
-        <Col md={12}>
-          <Form.Group>
-            <Form.Label>Tipo de Espacio</Form.Label>
-            <Form.Select
-              value={filtros.tipoEspacio || ""}
-              onChange={(e) =>
-                handleFiltroChange("tipoEspacio", e.target.value || undefined)
-              }
+    <div className="filtro-reservas">
+      <div className="filtro-header">
+        <div className="filtro-title">
+          <i className="fas fa-search filtro-icon"></i>
+          <h3>Buscar Espacios</h3>
+        </div>
+        <div className="filtro-subtitle">Encuentra el espacio perfecto para tu reserva</div>
+      </div>
+
+      <div className="filtro-content">
+        {/* Filtro por tipo de espacio */}
+        <div className="filter-group">
+          <label className="filter-label">
+            <i className="fas fa-building filter-label-icon"></i>
+            Tipo de Espacio
+          </label>
+          <div className="filter-options">
+            <button
+              type="button"
+              className={`filter-option ${!filtros.tipoEspacio ? 'active' : ''}`}
+              onClick={() => handleFiltroChange('tipoEspacio', undefined)}
             >
-              <option value="">Todos los tipos</option>
-              <option value="Aula">Aula</option>
-              <option value="Laboratorio de Computación">
-                Lab. Computación
-              </option>
-              <option value="Laboratorio de Física">Lab. Física</option>
-              {tipoUsuairo === "Profesor" && (
-                <option value="Auditorio">Auditorio</option>
-              )}
-            </Form.Select>
-          </Form.Group>
-        </Col>
-      </Row>
+              <i className="fas fa-star filter-option-icon"></i>
+              <span>Todos</span>
+            </button>
+            {tiposEspacio.map((tipo) => (
+              <button
+                key={tipo.value}
+                type="button"
+                className={`filter-option ${filtros.tipoEspacio === tipo.value ? 'active' : ''}`}
+                onClick={() => handleFiltroChange('tipoEspacio', tipo.value)}
+              >
+                <i className={`fas ${tipo.icon} filter-option-icon`}></i>
+                <span>{tipo.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
 
-      {/* Selección de espacio filtrados */}
-      <Row className="mb-3">
-        <Col md={12}>
-          <Form.Group>
-            <Form.Label>Seleccionar Espacio</Form.Label>
-            <Form.Select
-              onChange={(e) => onSelectEspacio(e.target.value || null)}
-              disabled={loading || !!error}
-            >
-              <option value="">Seleccione un espacio</option>
-              {espaciosFiltrados.map((espacio) => (
-                <option key={espacio.id} value={espacio.id}>
-                  {espacio.nombre} - {espacio.tipo} (Capacidad:{" "}
-                  {espacio.capacidad})
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-        </Col>
-      </Row>
+        {/* Selección de espacio */}
+        <div className="filter-group">
+          <label className="filter-label">
+            <i className="fas fa-map-marker-alt filter-label-icon"></i>
+            Seleccionar Espacio
+          </label>
 
-      {/* Botón para limpiar */}
-      <Button
-        variant="outline-secondary"
-        onClick={limpiarFiltros}
-        disabled={loading}
-      >
-        Limpiar Filtros
-      </Button>
+          {loading && (
+            <div className="loading-state">
+              <div className="loading-spinner"></div>
+              <span>Cargando espacios...</span>
+            </div>
+          )}
 
-      {/* Manejo de error */}
-      {error && <p className="text-danger mt-2">Error cargando espacios</p>}
-    </Form>
+          {error && (
+            <div className="error-state">
+              <i className="fas fa-exclamation-triangle error-icon"></i>
+              <span>Error cargando espacios</span>
+            </div>
+          )}
+
+          {!loading && !error && (
+            <div className="select-wrapper">
+              <select
+                className="modern-select"
+                value={selectedEspacio}
+                onChange={(e) => handleEspacioChange(e.target.value)}
+              >
+                <option value="">Seleccione un espacio</option>
+                {espaciosFiltrados.map((espacio) => (
+                  <option key={espacio.id} value={espacio.id}>
+                    {espacio.nombre} - {espacio.tipo} (Cap: {espacio.capacidad})
+                  </option>
+                ))}
+              </select>
+              <div className="select-arrow">
+                <i className="fas fa-chevron-down"></i>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Información del espacio seleccionado */}
+        {selectedEspacio && (
+          <div className="selected-space-info">
+            {(() => {
+              const espacio = espacios.find((e) => e.id.toString() === selectedEspacio);
+              return espacio ? (
+                <div className="space-card">
+                  <div className="space-header">
+                    <i className="fas fa-door-open space-icon"></i>
+                    <div className="space-details">
+                      <h4>{espacio.nombre}</h4>
+                      <p>{espacio.tipo}</p>
+                    </div>
+                  </div>
+                  <div className="space-capacity">
+                    <i className="fas fa-users capacity-icon"></i>
+                    <span>Capacidad: {espacio.capacidad} personas</span>
+                  </div>
+                </div>
+              ) : null;
+            })()}
+          </div>
+        )}
+
+        {/* Acciones */}
+        <div className="filter-actions">
+          <button
+            type="button"
+            className="clear-filters-btn"
+            onClick={limpiarFiltros}
+            disabled={loading}
+          >
+            <i className="fas fa-redo-alt btn-icon"></i>
+            <span>Limpiar Filtros</span>
+          </button>
+        </div>
+      </div>
+    </div>
   );
 };
 

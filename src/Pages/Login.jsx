@@ -1,6 +1,5 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import ThemeSwitcher from "../Components/ThemeSwitcher";
 import Image from "react-bootstrap/Image";
 import Alert from "react-bootstrap/Alert";
 import { Link } from "react-router-dom";
@@ -12,7 +11,7 @@ import { ConversionEmail } from "../Classes/Adapter/conversionEmail";
 import { FachadaDeEstados } from "../Classes/Estados/Fachada/FachadaDeEstados";
 import { useGeneral } from "../Utils/GeneralContext";
 
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 function Login() {
   const navigate = useNavigate();
 
@@ -24,6 +23,7 @@ function Login() {
     storedPassword: "",
     direccion_iddireccion: null,
     trial372: null,
+    tipo: "",
   });
 
   const { login } = useGeneral();
@@ -50,7 +50,7 @@ function Login() {
         setShowAlert(fachada.cambioMostrarAlerta());
       } else {
         cliente.email = emailAdapter.convertirEmailAMinuscula(cliente.email);
-        const res = await fetch("http://localhost:3000/usuario/Login", {
+        const res = await fetch(`${API_BASE_URL}/usuario/Login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(cliente),
@@ -58,7 +58,7 @@ function Login() {
 
         if (res.ok) {
           const data = await res.json();
-          console.log(data);
+          // console.log(data);
 
           if (data.message) {
             setAlertText(data.message);
@@ -71,7 +71,9 @@ function Login() {
             setAlertState(fachada.cambioEstadoDeAlerta(0));
             setShowAlert(fachada.cambioMostrarAlerta());
 
-            login(email, nombre, tipo); // ✅ usamos el contexto aquí
+            login(email);
+            localStorage.setItem("username", nombre);
+            localStorage.setItem("tipoUsuario", tipo);
 
             // Redirigir según tipo de usuario
             switch (tipo) {
@@ -134,6 +136,21 @@ function Login() {
           <Image className="logoCentral" src="/logo.png" fluid width="22%" />
         </Form.Group>
         <Form onSubmit={handleFormSubmit} data-testid="Form">
+          {/* <Form.Group className="mb-3" controlId="formTipoRegistro">
+            <Form.Select 
+              style={{ width: "325px" }}
+              name="tipo"
+              onChange={clientChange}
+              value={cliente.tipo || ""}
+              data-testid="Tipo de registro"
+            >
+              <option value="">Selecciona tu tipo</option>
+              <option value="Estudiante">Estudiante</option>
+              <option value="Profesor">Profesor</option>
+              <option value="Externo">Externo</option>
+              <option value="Laborista">Laborista</option>
+            </Form.Select>
+          </Form.Group> */}
 
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Control
@@ -181,10 +198,16 @@ function Login() {
               Crear cuenta
             </Button>
           </Link>
+          <Link to={"/"} className="d-block mt-3">
+            <Button
+              variant="outline-secondary"
+              className="btn-back-home"
+            >
+              ← Volver al inicio
+            </Button>
+          </Link>
         </Form.Group>
       </div>
-      <ThemeSwitcher/>
-      <br/>
     </>
   );
 }

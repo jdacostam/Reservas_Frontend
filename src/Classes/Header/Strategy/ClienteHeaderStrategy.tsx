@@ -1,9 +1,7 @@
-import React from "react";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import Offcanvas from "react-bootstrap/Offcanvas";
-import "../../../Styles/ClienteHeader.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from 'react';
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
+import '../../../Styles/SidebarMenu.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faShop,
   faUser,
@@ -11,99 +9,92 @@ import {
   faSignOut,
   faStar,
   faArrowPointer,
-} from "@fortawesome/free-solid-svg-icons";
-import { Link } from "react-router-dom";
-import HeaderStrategy from "./HeaderStrategy";
+} from '@fortawesome/free-solid-svg-icons';
 
-// Estrategia para cliente autenticado
-class ClienteHeaderStrategy implements HeaderStrategy {
-  // Metodo para cerrar sesion
-  public reset = (): void => {
-    localStorage.removeItem("email");
-    localStorage.removeItem("username");
-    localStorage.removeItem("tipoUsuario");
-    window.location.assign("/");
+const ClienteHeaderStrategy: React.FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => setIsOpen((prev) => !prev);
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate('/');
+    window.location.reload();
   };
 
-  // Metodo que retorna la barra de navegacion del cliente
-  public renderNavbar(): JSX.Element {
-    return (
-      <>
-        <Navbar
-          data-testid="Header"
-          sticky="top"
-          key="md"
-          expand="md"
-          className="bg-body-tertiary mb-5 border-bottomer ps-5"
-        >
-          <Navbar.Brand href="/pagUsuario">
-            Reservas UD
-          </Navbar.Brand>
-          <Navbar.Offcanvas
-            id={`offcanvasNavbar-expand-md`}
-            aria-labelledby={`offcanvasNavbarLabel-expand-md`}
-            placement="end"
-          >
-            <Offcanvas.Body>
-              <Nav
-                variant="pills"
-                className="justify-content-end flex-grow-1 pe-3"
-              >
+  return (
+    <>
+      <div className="hamburger" onClick={toggleMenu}>
+        <div className="line"></div>
+        <div className="line"></div>
+        <div className="line"></div>
+      </div>
 
+      <div className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <ul>
+          <li>
+            <NavLink
+              to="/pagUsuario/usuario"
+              onClick={toggleMenu}
+              className={({ isActive }) => (isActive ? 'active-link' : '')}
+            >
+              <FontAwesomeIcon icon={faUser} /> {localStorage.getItem('username')}
+            </NavLink>
+          </li>
 
-                <Nav.Item className="item">
-                  <Nav.Link as={Link} to="/pagUsuario/usuario" active={location.pathname === "/"}>
-                    <FontAwesomeIcon icon={faUser} /> {localStorage.username}
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="item">
-                  <Nav.Link as={Link} to="/pagUsuario/reserva" active={location.pathname === "/"}>
-                    <FontAwesomeIcon icon={faShop} /> Reservar Espacio
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="item">
-                  <Nav.Link
-                    as={Link}
-                    to="/pagUsuario/reservaMaterial"
-                    active={location.pathname === "/"}
-                  >
-                    <FontAwesomeIcon icon={faStar} /> Reservar Material
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="item">
-                  <Nav.Link
-                    as={Link}
-                    to="/pagUsuario/externo"
-                    active={location.pathname === "/"}
-                  >
-                    <FontAwesomeIcon icon={faArrowPointer} /> Recursos externos
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item className="item">
-                  <Nav.Link
-                    as={Link}
-                    to="/pagUsuario/misReservas"
-                    active={location.pathname === "/"}
-                  >
-                    <FontAwesomeIcon icon={faCartShopping} /> Mis Reservas
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item onClick={() => this.reset()}>
-                  <Nav.Link
-                    as={Link}
-                    to="/"
-                    active={location.pathname === "/" }
-                    >
-                      <FontAwesomeIcon icon={faSignOut} /> Cerrar sesión
-                  </Nav.Link>
-              </Nav.Item>
-            </Nav>
-          </Offcanvas.Body>
-        </Navbar.Offcanvas>
-      </Navbar >
-      </>
-    );
-  }
-}
+          <li>
+            <NavLink
+              to="/pagUsuario/reserva"
+              onClick={toggleMenu}
+              className={({ isActive }) => (isActive ? 'active-link' : '')}
+            >
+              <FontAwesomeIcon icon={faShop} /> Reservar Espacio
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/pagUsuario/reservaMaterial"
+              onClick={toggleMenu}
+              className={({ isActive }) => (isActive ? 'active-link' : '')}
+            >
+              <FontAwesomeIcon icon={faStar} /> Reservar Material
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/pagUsuario/externo"
+              onClick={toggleMenu}
+              className={({ isActive }) => (isActive ? 'active-link' : '')}
+            >
+              <FontAwesomeIcon icon={faArrowPointer} /> Recursos Externos
+            </NavLink>
+          </li>
+
+          <li>
+            <NavLink
+              to="/pagUsuario/misReservas"
+              onClick={toggleMenu}
+              className={({ isActive }) => (isActive ? 'active-link' : '')}
+            >
+              <FontAwesomeIcon icon={faCartShopping} /> Mis Reservas
+            </NavLink>
+          </li>
+
+          <li onClick={handleLogout}>
+            <Link to="/">
+              <FontAwesomeIcon icon={faSignOut} /> Cerrar sesión
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {isOpen && <div className="overlay" onClick={toggleMenu}></div>}
+    </>
+  );
+};
 
 export default ClienteHeaderStrategy;
