@@ -8,7 +8,16 @@ const PublicRoute = () => {
   if (!authChecked) return null; // Esperar a que cargue
 
   // Si ya está logueado, redirige al panel del usuario
-  if (userEmail) return  userType == 'Estudiante' ? <Navigate to="/pagUsuario/usuario" replace /> : <Navigate to="/laborista/usuario" replace />;
+  if (userEmail) {
+    if (["Estudiante", "Profesor", "Externo"].includes(userType || "")) {
+      return <Navigate to="/pagUsuario/usuario" replace />;
+    }
+    if (userType === "Laborista") {
+      return <Navigate to="/laborista/usuario" replace />;
+    }
+    return <Navigate to="/" replace />;
+  }
+
   return <Outlet />
 };
 

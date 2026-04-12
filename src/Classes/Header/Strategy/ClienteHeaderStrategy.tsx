@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import '../../../Styles/SidebarMenu.css';
+import { useGeneral } from '../../../Utils/GeneralContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faShop,
@@ -18,13 +19,14 @@ interface Props {
 const ClienteHeaderStrategy: React.FC<Props> = ({ userName }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { logout } = useGeneral();
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
   const handleLogout = () => {
+    logout();
     navigate('/');
-    window.location.reload();
   };
 
   return (

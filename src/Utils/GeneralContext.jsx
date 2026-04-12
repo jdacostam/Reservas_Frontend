@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { API_BASE_URL } from "./apiBaseUrl";
 
 const GeneralContext = createContext();
+const AUTH_STORAGE_KEY = "reservas_auth_user";
 
 export const GeneralProvider = ({ children }) => {
   const [show2, setShow2] = useState(false);
@@ -10,12 +11,24 @@ export const GeneralProvider = ({ children }) => {
   const [estampados, setEstampados] = useState([]);
   const [estampadoElegido, setEstampadoElegido] = useState(-1);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [authChecked, setAuthChecked] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false);
   const [userEmail, setUserEmail] = useState(null);
   const [userName, setUserName] = useState(null);
   const [userType, setUserType] = useState(null);
 
   useEffect(() => {
+    try {
+      const persistedUserRaw = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (persistedUserRaw) {
+        const persistedUser = JSON.parse(persistedUserRaw);
+        setUserEmail(persistedUser?.email ?? null);
+        setUserName(persistedUser?.nombre ?? null);
+        setUserType(persistedUser?.tipo ?? null);
+      }
+    } catch (error) {
+      console.error("No se pudo restaurar la sesión", error);
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
     setAuthChecked(true);
   }, []);
 
@@ -23,6 +36,20 @@ export const GeneralProvider = ({ children }) => {
     setUserEmail(user?.email ?? null);
     setUserName(user?.nombre ?? null);
     setUserType(user?.tipo ?? null);
+
+    if (user?.email && user?.tipo) {
+      localStorage.setItem(
+        AUTH_STORAGE_KEY,
+        JSON.stringify({
+          email: user.email,
+          nombre: user.nombre ?? null,
+          tipo: user.tipo,
+        })
+      );
+    } else {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+    }
+
     return user;
   };
 
@@ -53,6 +80,7 @@ export const GeneralProvider = ({ children }) => {
     setUserName(null);
     setUserType(null);
     setSelectedImage(null);
+    localStorage.removeItem(AUTH_STORAGE_KEY);
   };
 
   const handleShow = (data) => {
