@@ -1,28 +1,19 @@
 import Container from "react-bootstrap/Container";
 import getHeaderComponent from "./Strategy/HeaderContext";
 import { useState, useEffect } from "react";
+import { useGeneral } from "../../Utils/GeneralContext";
 
 const Header = () => {
   const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+  const { userEmail, userType, userName } = useGeneral();
 
   useEffect(() => {
-    const username = localStorage.getItem("username");
-    setIsUserAuthenticated(username !== null);
-  }, []);
-
-  useEffect(() => {
-    const handleStorageChange = () => {
-      const username = localStorage.getItem("username");
-      setIsUserAuthenticated(username !== null);
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
+    setIsUserAuthenticated(userEmail !== null);
+  }, [userEmail]);
 
   return (
     <Container fluid className="mx-0 px-0">
-      {getHeaderComponent(isUserAuthenticated)}
+      {getHeaderComponent(isUserAuthenticated, userType, userName)}
     </Container>
   );
 };

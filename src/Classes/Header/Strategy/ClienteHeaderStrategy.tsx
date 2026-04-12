@@ -11,7 +11,11 @@ import {
   faArrowPointer,
 } from '@fortawesome/free-solid-svg-icons';
 
-const ClienteHeaderStrategy: React.FC = () => {
+interface Props {
+  userName?: string | null;
+}
+
+const ClienteHeaderStrategy: React.FC<Props> = ({ userName }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +23,6 @@ const ClienteHeaderStrategy: React.FC = () => {
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
   const handleLogout = () => {
-    localStorage.clear();
     navigate('/');
     window.location.reload();
   };
@@ -40,7 +43,7 @@ const ClienteHeaderStrategy: React.FC = () => {
               onClick={toggleMenu}
               className={({ isActive }) => (isActive ? 'active-link' : '')}
             >
-              <FontAwesomeIcon icon={faUser} /> {localStorage.getItem('username')}
+              <FontAwesomeIcon icon={faUser} /> {userName || 'Usuario'}
             </NavLink>
           </li>
 

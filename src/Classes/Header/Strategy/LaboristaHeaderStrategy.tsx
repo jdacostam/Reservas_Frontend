@@ -11,7 +11,11 @@ import {
   faArrowPointer,
 } from '@fortawesome/free-solid-svg-icons';
 
-const LaboristaHeaderStrategy: React.FC = () => {
+interface Props {
+  userName?: string | null;
+}
+
+const LaboristaHeaderStrategy: React.FC<Props> = ({ userName }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +23,6 @@ const LaboristaHeaderStrategy: React.FC = () => {
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
   const handleLogout = () => {
-    localStorage.clear();
     navigate('/');
     window.location.reload();
   };
@@ -41,7 +44,7 @@ const LaboristaHeaderStrategy: React.FC = () => {
               onClick={toggleMenu}
               className={({ isActive }) => (isActive ? 'active-link' : '')}
             >
-              <FontAwesomeIcon icon={faUser} /> {localStorage.getItem('username')}
+              <FontAwesomeIcon icon={faUser} /> {userName || 'Usuario'}
             </NavLink>
           </li>
 

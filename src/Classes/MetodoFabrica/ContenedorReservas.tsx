@@ -4,20 +4,19 @@ import Contenedor from "./Contenedor";
 import ComponenteReserva from "../../Components/ComponenteReserva";
 import { useGeneral } from "../../Utils/GeneralContext";
 import "/src/Styles/Contenedor.css";
+import { API_BASE_URL } from "../../Utils/apiBaseUrl";
 
-const API_BASE_URL = (import.meta as any).env.VITE_API_BASE_URL;
 class ContenedorReservas extends Contenedor {
     render(): JSX.Element {
         const [reservas, setReservas] = useState<any[]>([]);
         const [handleShow, setTipoReserva] = useState<any>(null);
-        const tipoDeCliente = localStorage.getItem("tipoUsuario");
-        const email = localStorage.getItem("email");
+        const { userEmail } = useGeneral();
 
         useEffect(() => {
-            if (email) {
-                obtenerReservasPorEmail(email);
+            if (userEmail) {
+                obtenerReservasPorEmail(userEmail);
             }
-        }, [email]);
+        }, [userEmail]);
 
         const obtenerReservasPorEmail = async (email: string) => {
             try {

@@ -10,8 +10,8 @@ import "../Styles/Login.css";
 import { ConversionEmail } from "../Classes/Adapter/conversionEmail";
 import { FachadaDeEstados } from "../Classes/Estados/Fachada/FachadaDeEstados";
 import { useGeneral } from "../Utils/GeneralContext";
+import { API_BASE_URL } from "../Utils/apiBaseUrl";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 function Login() {
   const navigate = useNavigate();
 
@@ -64,16 +64,21 @@ function Login() {
             setAlertText(data.message);
             setAlertState(fachada.cambioEstadoDeAlerta(1));
             setShowAlert(fachada.cambioMostrarAlerta());
-          } else {
+          } else if (Array.isArray(data.user) && data.user.length > 0) {
             const { email, nombre, tipo } = data.user[0];
+
+            if (!email || !nombre || !tipo) {
+              setAlertText("Correo no registrado");
+              setAlertState(fachada.cambioEstadoDeAlerta(1));
+              setShowAlert(fachada.cambioMostrarAlerta());
+              return;
+            }
 
             setAlertText("Correo y contraseña válidos :D");
             setAlertState(fachada.cambioEstadoDeAlerta(0));
             setShowAlert(fachada.cambioMostrarAlerta());
 
-            login(email);
-            localStorage.setItem("username", nombre);
-            localStorage.setItem("tipoUsuario", tipo);
+            await login({ email, nombre, tipo });
 
             // Redirigir según tipo de usuario
             switch (tipo) {
@@ -91,6 +96,10 @@ function Login() {
                 setShowAlert(fachada.cambioMostrarAlerta());
 
             }
+          } else {
+            setAlertText("Correo o contraseña incorrectos");
+            setAlertState(fachada.cambioEstadoDeAlerta(1));
+            setShowAlert(fachada.cambioMostrarAlerta());
           }
         } else {
           setAlertText("Correo no registrado");

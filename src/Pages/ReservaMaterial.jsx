@@ -5,14 +5,14 @@ import Col from "react-bootstrap/Col";
 import Footer from "../Components/Footer";
 import Header from "../Classes/Header/Header";
 import ThemeSwitcher from "../Components/ThemeSwitcher";
-import { GeneralProvider } from "../Utils/GeneralContext";
+import { useGeneral } from "../Utils/GeneralContext";
 import axios from "axios"; // Necesario para consultar la API
 import "../Styles/ReservaMaterial.css";
 import Select from "react-select";
+import { API_BASE_URL } from "../Utils/apiBaseUrl";
 
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 function ReservaMaterial() {
+  const { userEmail } = useGeneral();
   const [materiales, setMateriales] = useState([]);
   const [materialSeleccionado, setMaterialSeleccionado] = useState("");
   const [cantidadSeleccionada, setCantidad] = useState(null);
@@ -38,7 +38,7 @@ function ReservaMaterial() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           materialId: materialSeleccionado,
-          usuarioId: localStorage.getItem("email"),
+          usuarioId: userEmail,
           cantidad: cantidadSeleccionada,
           fecha: fecha,
           fechaReserva: new Date(),
@@ -181,9 +181,6 @@ function ReservaMaterial() {
         </Col>
 
       </Row>
-
-      <GeneralProvider>{/* contexto general si aplica */}</GeneralProvider>
-
     </Container>
 
   );

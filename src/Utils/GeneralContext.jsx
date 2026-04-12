@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { API_BASE_URL } from "./apiBaseUrl";
 
 const GeneralContext = createContext();
 
@@ -9,35 +10,53 @@ export const GeneralProvider = ({ children }) => {
   const [estampados, setEstampados] = useState([]);
   const [estampadoElegido, setEstampadoElegido] = useState(-1);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [authChecked, setAuthChecked] = useState(false); 
+  const [authChecked, setAuthChecked] = useState(true);
   const [userEmail, setUserEmail] = useState(null);
+  const [userName, setUserName] = useState(null);
   const [userType, setUserType] = useState(null);
 
   useEffect(() => {
-    const email = localStorage.getItem("email");
-    const type = localStorage.getItem("tipoUsuario");
-    if (email) {
-      setUserEmail(email);
-    }
-    if (type) {
-      setUserType(type);
-    }
-    setAuthChecked(true); 
+    setAuthChecked(true);
   }, []);
 
-  const login = (email) => {
-    localStorage.setItem("email", email);
-    setUserEmail(email);
+  const applyUser = (user) => {
+    setUserEmail(user?.email ?? null);
+    setUserName(user?.nombre ?? null);
+    setUserType(user?.tipo ?? null);
+    return user;
+  };
+
+  const fetchUserByEmail = async (email) => {
+    if (!email) return null;
+
+    const response = await fetch(`${API_BASE_URL}/usuario/consultarEmail/${email}`);
+    if (!response.ok) throw new Error("Error al obtener usuario");
+
+    const data = await response.json();
+    const user = Array.isArray(data) ? data[0] : data;
+    return user ?? null;
+  };
+
+  const login = async (userOrEmail) => {
+    if (!userOrEmail) return null;
+
+    if (typeof userOrEmail === "string") {
+      const user = await fetchUserByEmail(userOrEmail);
+      return applyUser(user);
+    }
+
+    return applyUser(userOrEmail);
   };
 
   const logout = () => {
-    localStorage.removeItem("email");
     setUserEmail(null);
+    setUserName(null);
+    setUserType(null);
+    setSelectedImage(null);
   };
 
   const handleShow = (data) => {
-    if (localStorage.getItem("username") != null) {
-      localStorage.setItem("selectedShirt", JSON.stringify(data));
+    if (userEmail != null) {
       setSelectedImage(data.diseño);
       setShow(true);
     }
@@ -69,9 +88,11 @@ export const GeneralProvider = ({ children }) => {
         setEstampadoElegido,
         selectedImage,
         userEmail,
+        userName,
         userType,
         login,
         logout,
+        fetchUserByEmail,
         authChecked
       }}
     >

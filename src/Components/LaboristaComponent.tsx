@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../Styles/ClienteProfile.css';
 import { useNavigate } from 'react-router-dom';
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { useGeneral } from "../Utils/GeneralContext";
 
 // Iconos SVG
 const UserIcon = () => (
@@ -56,12 +55,12 @@ const CardContent = ({ children, className = '' }) => (
 export default function LaboristaProfile() {
   const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState('');
-  const email = localStorage.getItem('email');
+  const { userEmail, fetchUserByEmail } = useGeneral();
   const [usuario, setUsuario] = useState<any>(null);
 
   useEffect(() => {
-    if (email) {
-      obtenerUsuario(email);
+    if (userEmail) {
+      obtenerUsuario(userEmail);
     }
 
     const today = new Date();
@@ -72,14 +71,12 @@ export default function LaboristaProfile() {
       day: 'numeric',
     };
     setCurrentDate(today.toLocaleDateString('es-ES', options));
-  }, []);
+  }, [userEmail]);
 
   const obtenerUsuario = async (email) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/usuario/consultarEmail/${email}`);
-      if (!response.ok) throw new Error('Error al obtener usuario');
-      const json = await response.json();
-      setUsuario(json);
+      const user = await fetchUserByEmail(email);
+      setUsuario(user);
     } catch (error) {
       console.error('Error al obtener usuario:', error);
     }

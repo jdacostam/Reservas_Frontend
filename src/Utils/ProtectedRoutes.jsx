@@ -1,7 +1,9 @@
 import { Outlet, Navigate } from "react-router-dom";
+import { useGeneral } from "./GeneralContext";
 
 const ProtectedRoutes = (prop) => {
-  const usuario = localStorage.getItem("tipoDeCliente"); // La función getUser() devuelve el usuario si está logueado o null si no lo está.
+  const { userType, userEmail } = useGeneral();
+  const usuario = userType;
   
 
   if (prop.rolAutorizado) {
@@ -11,7 +13,7 @@ const ProtectedRoutes = (prop) => {
       return <Navigate to="/" />;
     }
   } else {
-    if (!usuario) {
+    if (!userEmail) {
       return <Outlet />;
     }
   }

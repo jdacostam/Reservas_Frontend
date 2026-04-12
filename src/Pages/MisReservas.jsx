@@ -2,7 +2,6 @@ import React from "react";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
-import { GeneralProvider } from "../Utils/GeneralContext";
 import Footer from "../Components/Footer";
 import Header from "../Classes/Header/Header";
 import ContenedorCartas from "../Components/ContenedorCartas";
@@ -26,10 +25,8 @@ function MisReservas() {
           </Col>
         </Row>
 
-        <GeneralProvider>
-          <ContenedorCartas tipo="espacios" />
-          <ContenedorCartas tipo="materiales" />
-        </GeneralProvider>
+        <ContenedorCartas tipo="espacios" />
+        <ContenedorCartas tipo="materiales" />
 
         <br />
         <br />

@@ -45,13 +45,13 @@ npm install
 
 ### Configuración
 
-Crea un archivo `.env` en la raíz del proyecto con la siguiente configuración:
+Crea un archivo `.env` en la raíz del proyecto con una URL completa y con protocolo:
 
 ```env
-VITE_API_BASE_URL="https://www.reservaspro.xyz"
+VITE_API_BASE_URL="http://localhost:3000"
 ```
 
-Ajusta la URL según la configuración de tu backend.
+Ajusta la URL según la configuración de tu backend. Si la variable no existe, el frontend caerá en el valor por defecto y verás la advertencia en consola.
 
 ### Ejecutar el Proyecto
 
@@ -60,6 +60,10 @@ npm run dev
 ```
 
 La aplicación estará disponible en `http://localhost:5173`
+
+Si cambias `.env`, reinicia el servidor frontend para que Vite vuelva a cargar las variables de entorno.
+
+Si sigues viendo un 404, confirma que el backend realmente expone la ruta `POST /usuario/crearUsuario` en la base URL configurada.
 
 ### Ejecutar Tests
 

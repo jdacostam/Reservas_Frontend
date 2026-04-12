@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ConfirmacionReserva from './ConfirmacionReserva';
 import './CalendarioSemanal.css';
+import { API_BASE_URL } from "../Utils/apiBaseUrl";
+import { useGeneral } from "../Utils/GeneralContext";
 
 interface Props {
   idEspacio: number;
@@ -43,9 +45,8 @@ interface ReservaSeleccionada {
   horaFin: string;
   calendarioId: number;
 }
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
+  const { userEmail, userType } = useGeneral();
   const [semanaActual, setSemanaActual] = useState(0);
   const [disponibilidadSemana, setDisponibilidadSemana] = useState<DisponibilidadDia[]>([]);
   const [loading, setLoading] = useState(false);
@@ -184,7 +185,7 @@ const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           calendarioId: reservaSeleccionada.calendarioId,
-          usuarioId: localStorage.getItem('email'),
+          usuarioId: userEmail,
         }),
       });
 
@@ -236,7 +237,7 @@ const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
     );
   }
 
-  const tipoUsuario = String(localStorage.getItem('tipoUsuario'));
+  const tipoUsuario = String(userType);
 
   return (
     <>

@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import { Col, Card, Badge, Button } from "react-bootstrap";
-import { GeneralProvider } from "../Utils/GeneralContext";
 import FiltroGestionReservas from "../Components/FiltroGestionReservas";
 import "../Styles/Gestion.css";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "../Utils/apiBaseUrl";
 
 function GestionReserva() {
   const [reservas, setReserva] = useState([]);
@@ -63,8 +61,7 @@ function GestionReserva() {
   };
 
   return (
-    <GeneralProvider>
-      <Container fluid className="align-items-center m-0 p-0 containerR">
+    <Container fluid className="align-items-center m-0 p-0 containerR">
         <Row className="width-100vw mt-0">
           <Col xs={{ span: 8, offset: 2 }}>
             <Row className="p-5">
@@ -275,7 +272,6 @@ function GestionReserva() {
         <br />
         <br />
       </Container>
-    </GeneralProvider>
   );
 }
 

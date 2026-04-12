@@ -8,8 +8,7 @@ import { useState } from "react";
 import { ConversionEmail } from "../Classes/Adapter/conversionEmail";
 import Header from "../Classes/Header/Header";
 import { FachadaDeEstados } from "../Classes/Estados/Fachada/FachadaDeEstados";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "../Utils/apiBaseUrl";
 
 function Registro() {
   const fachada = new FachadaDeEstados();
@@ -30,8 +29,18 @@ function Registro() {
     codigoEstudiantil: "",
   });
 
-  const clientChange = (e) =>
-    setCliente({ ...cliente, [e.target.name]: e.target.value });
+  const clientChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "cedula" || name === "codigoEstudiantil") {
+      const maxLength = name === "cedula" ? 10 : 11;
+      const numericValue = value.replace(/\D/g, "").slice(0, maxLength);
+      setCliente({ ...cliente, [name]: numericValue });
+      return;
+    }
+
+    setCliente({ ...cliente, [name]: value });
+  };
 
   const handleSelect = (e) => {
     const tipo = e.target.value;
@@ -43,7 +52,8 @@ function Registro() {
     setLoading(true);
 
     try {
-      const { nombre, email, password, tipo, codigoEstudiantil } = cliente;
+      const { nombre, email, password, tipo, cedula, codigoEstudiantil } =
+        cliente;
 
       // Validaciones específicas de longitud
       if (nombre.length > 45) {
@@ -70,12 +80,34 @@ function Registro() {
         return;
       }
 
+      if (!/^\d{6,10}$/.test(cedula)) {
+        setAlertText("La cédula debe tener entre 6 y 10 números");
+        setAlertState(fachada.cambioEstadoDeAlerta(1));
+        setShowAlert(fachada.cambioMostrarAlerta());
+        setLoading(false);
+        return;
+      }
+
+      if (tipo === "Estudiante" && !/^\d{11}$/.test(codigoEstudiantil)) {
+        setAlertText("El código estudiantil debe ser de 11 dígitos");
+        setAlertState(fachada.cambioEstadoDeAlerta(1));
+        setShowAlert(fachada.cambioMostrarAlerta());
+        setLoading(false);
+        return;
+      }
+
       const emailLower = emailAdapter.convertirEmailAMinuscula(email);
       const payload = {
         ...cliente,
         email: emailLower,
         codigoEstudiantil: tipo === "Estudiante" ? codigoEstudiantil : null,
       };
+
+      if (import.meta.env.DEV) {
+        const debugPayload = { ...payload, password: "***" };
+        console.log("[Registro] API_BASE_URL:", API_BASE_URL);
+        console.log("[Registro] Payload:", debugPayload);
+      }
 
       const res = await fetch(`${API_BASE_URL}/usuario/crearUsuario`, {
         method: "POST",
@@ -84,6 +116,14 @@ function Registro() {
       });
 
       const data = await res.json();
+
+      if (import.meta.env.DEV) {
+        console.log("[Registro] Response:", {
+          status: res.status,
+          ok: res.ok,
+          data,
+        });
+      }
 
       if (data.statusCode === 200) {
         setAlertText("El usuario ya existe");
@@ -104,6 +144,10 @@ function Registro() {
       setLoading(false);
     }
   };
+
+  const isCedulaValida = /^\d{6,10}$/.test(cliente.cedula);
+  const isCodigoEstudiantilValido =
+    cliente.tipo !== "Estudiante" || /^\d{11}$/.test(cliente.codigoEstudiantil);
 
   return (
     <>
@@ -182,7 +226,10 @@ function Registro() {
               placeholder="Cédula"
               onChange={clientChange}
               value={cliente.cedula}
+              inputMode="numeric"
+              maxLength={10}
             />
+            <Form.Text>Debe tener entre 6 y 10 números.</Form.Text>
           </Form.Group>
 
           {cliente.tipo === "Estudiante" && (
@@ -194,7 +241,10 @@ function Registro() {
                 placeholder="Código Estudiantil"
                 onChange={clientChange}
                 value={cliente.codigoEstudiantil}
+                inputMode="numeric"
+                maxLength={11}
               />
+              <Form.Text>Debe tener exactamente 11 dígitos.</Form.Text>
             </Form.Group>
           )}
 
@@ -206,8 +256,8 @@ function Registro() {
               !cliente.email ||
               !cliente.password ||
               !cliente.tipo ||
-              !cliente.cedula ||
-              (cliente.tipo === "Estudiante" && !cliente.codigoEstudiantil)
+              !isCedulaValida ||
+              !isCodigoEstudiantilValido
             }
             data-testid="Registrarme"
           >

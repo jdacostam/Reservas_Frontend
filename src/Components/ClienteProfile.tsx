@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import '../Styles/ClienteProfile.css';
 import SidebarMenu from './SidebarMenu';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { useGeneral } from "../Utils/GeneralContext";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 // Componentes de iconos SVG simples
 const UserIcon = () => (
   <svg className="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -56,11 +56,11 @@ const CardContent = ({ children, className = '' }) => (
 export default function UserProfile() {
   const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState('');
-  const email = localStorage.getItem('email');
+  const { userEmail, fetchUserByEmail } = useGeneral();
   const [usuario, setUsuario] = useState<any>(null);
   useEffect(() => {
-    if (email) {
-      obtenerUsuario(email);
+    if (userEmail) {
+      obtenerUsuario(userEmail);
     }
 
     const today = new Date();
@@ -71,7 +71,7 @@ export default function UserProfile() {
       day: 'numeric',
     };
     setCurrentDate(today.toLocaleDateString('es-ES', options));
-  }, []);
+  }, [userEmail]);
 
   const handleReservationClick = () => {
     console.log('Navegando al sistema de reservas...');
@@ -82,10 +82,8 @@ export default function UserProfile() {
 
   const obtenerUsuario = async (email) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/usuario/consultarEmail/${email}`);
-      if (!response.ok) throw new Error('Error al obtener usuario');
-      const json = await response.json();
-      setUsuario(json);
+      const user = await fetchUserByEmail(email);
+      setUsuario(user);
     } catch (error) {
       console.error('Error al obtener usuario:', error);
     }

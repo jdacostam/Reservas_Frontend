@@ -2,17 +2,20 @@ import ClienteHeaderStrategy from "./ClienteHeaderStrategy";
 import NoAuthHeaderStrategy from "./NoAuthHeaderStrategy";
 import LaboristaHeaderStrategy from "./LaboristaHeaderStrategy";
 
-export function getHeaderComponent(isUserAuthenticated: boolean): JSX.Element {
-  const tipoCliente = localStorage.getItem("tipoUsuario");
+export function getHeaderComponent(
+  isUserAuthenticated: boolean,
+  tipoCliente?: string | null,
+  userName?: string | null
+): JSX.Element {
 
   if (!isUserAuthenticated) return <NoAuthHeaderStrategy />;
 
   if (["Estudiante", "Profesor", "Externo"].includes(tipoCliente || "")) {
-    return <ClienteHeaderStrategy />;
+    return <ClienteHeaderStrategy userName={userName} />;
   }
 
   if (tipoCliente === "Laborista") {
-    return <LaboristaHeaderStrategy />;
+    return <LaboristaHeaderStrategy userName={userName} />;
   }
 
   return <NoAuthHeaderStrategy />;

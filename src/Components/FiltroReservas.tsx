@@ -2,17 +2,17 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useEspacios } from '../hooks/useEspacios';
 import { FiltrosReserva } from '../types/reserva.types';
 import './FiltroReservas.css';
+import { API_BASE_URL } from "../Utils/apiBaseUrl";
+import { useGeneral } from "../Utils/GeneralContext";
 
 interface Props {
   onSelectEspacio: (espacioId: string | null) => void;
   onFiltrosChange?: (filtros: FiltrosReserva) => void;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 const FiltroReservas: React.FC<Props> = ({ onSelectEspacio, onFiltrosChange }) => {
-  const [tipoUsuario, setTipoUsuario] = useState('');
-  const email = localStorage.getItem('email');
+  const { userEmail, userType, fetchUserByEmail } = useGeneral();
+  const [tipoUsuario, setTipoUsuario] = useState(userType || '');
   const [filtros, setFiltros] = useState<FiltrosReserva>({});
   const [selectedEspacio, setSelectedEspacio] = useState<string>('');
 
@@ -45,21 +45,13 @@ const FiltroReservas: React.FC<Props> = ({ onSelectEspacio, onFiltrosChange }) =
     onFiltrosChange?.({});
   };
 
-  const obtenerUsuario = async (email: string | null) => {
-    if (!email) return;
-    try {
-      const response = await fetch(`${API_BASE_URL}/usuario/consultarEmail/${email}`);
-      if (!response.ok) throw new Error('Error al obtener usuario');
-      const json = await response.json();
-      setTipoUsuario(json.tipo);
-    } catch (error) {
-      console.error('Error al obtener usuario:', error);
-    }
-  };
-
   useEffect(() => {
-    obtenerUsuario(email);
-  }, [email]);
+    if (userEmail) {
+      fetchUserByEmail(userEmail)
+        .then((user) => setTipoUsuario(user?.tipo || ''))
+        .catch((error) => console.error('Error al obtener usuario:', error));
+    }
+  }, [userEmail, fetchUserByEmail]);
 
   const tiposEspacio = [
     { value: 'Aula', label: 'Aula', icon: 'fa-chalkboard' },

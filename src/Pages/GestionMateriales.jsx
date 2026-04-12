@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
 import { Col, Card, Badge, Button } from "react-bootstrap";
-import { GeneralProvider } from "../Utils/GeneralContext";
 import FiltroGestionReservaMateriales from "../Components/FiltroGestionReservaMateriales";
 import "../Styles/Gestion.css";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "../Utils/apiBaseUrl";
 
 function GestionMateriales() {
   const [materiales, setMateriales] = useState([]);
@@ -47,8 +45,7 @@ function GestionMateriales() {
   });
 
   return (
-    <GeneralProvider>
-      <Container fluid className="align-items-center m-0 p-0 containerR">
+    <Container fluid className="align-items-center m-0 p-0 containerR">
         <Row className="width-100vw mt-0">
           <Col xs={12}>
             <Row className="p-5">
@@ -268,7 +265,6 @@ function GestionMateriales() {
         <br />
         <br />
       </Container>
-    </GeneralProvider>
   );
 }
 

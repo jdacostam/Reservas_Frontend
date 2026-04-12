@@ -4,12 +4,12 @@ import ComponenteReservaMaterial from '../../Components/ComponenteReservaMateria
 import { useState } from 'react';
 import Contenedor from './Contenedor';
 import { useGeneral } from '../../Utils/GeneralContext';
-const API_BASE_URL = (import.meta as any).env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "../../Utils/apiBaseUrl";
+
 class ContenedorReservasMaterial extends Contenedor {
   render(): JSX.Element {
     const [materiales, setMateriales] = useState<any[]>([]);
-    const tipoDeCliente = localStorage.getItem('tipoUsuario');
-    const email = localStorage.getItem('email');
+    const { userEmail } = useGeneral();
 
     const [show, setShow] = useState(false);
     const [showCalificacion, setShowCalificacion] = useState(false);
@@ -31,12 +31,14 @@ class ContenedorReservasMaterial extends Contenedor {
     const [comentario, setComentario] = useState<string>('');
 
     useEffect(() => {
-      obtenerMateriales();
-    }, []);
+      if (userEmail) {
+        obtenerMateriales();
+      }
+    }, [userEmail]);
 
     const obtenerMateriales = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/reservas-material/byEmail/${email}`);
+        const response = await fetch(`${API_BASE_URL}/reservas-material/byEmail/${userEmail}`);
         if (!response.ok) throw new Error('Error al obtener materiales reservados');
         const json = await response.json();
         setMateriales(json);

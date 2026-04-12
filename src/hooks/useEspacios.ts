@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { EspacioDisponible, FiltrosReserva } from "../types/reserva.types";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "../Utils/apiBaseUrl";
 
 export const useEspacios = (filtros?: FiltrosReserva) => {
     const [espacios, setEspacios] = useState<EspacioDisponible[]>([]);

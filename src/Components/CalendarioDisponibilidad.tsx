@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { Card, Row, Col, Badge, Button, Alert, Spinner } from "react-bootstrap";
 import { useDisponibilidad } from "../hooks/useDisponibilidad";
-
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { API_BASE_URL } from "../Utils/apiBaseUrl";
 
 interface Props {
     idEspacio: number;

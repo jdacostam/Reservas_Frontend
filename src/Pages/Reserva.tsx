@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Alert } from 'react-bootstrap';
-import { GeneralProvider } from '../Utils/GeneralContext';
 import Footer from '../Components/Footer';
 import Header from '../Classes/Header/Header';
 import ThemeSwitcher from '../Components/ThemeSwitcher';
@@ -22,7 +21,6 @@ const ReservaPage: React.FC = () => {
   };
 
   return (
-    <GeneralProvider>
       <Container fluid className="align-items-center m-0 p-0 containerR">
         <Row className="width-100vw mt-5">
           <Col xs={{ span: 8, offset: 2 }}>
@@ -57,7 +55,6 @@ const ReservaPage: React.FC = () => {
         <br />
         <br />
       </Container>
-    </GeneralProvider>
   );
 };
 
