@@ -10,10 +10,12 @@ import '../Styles/Reserva.css';
 
 const ReservaPage: React.FC = () => {
   const [espacioSeleccionado, setEspacioSeleccionado] = useState<string | null>(null);
+  const [nombreEspacioSeleccionado, setNombreEspacioSeleccionado] = useState<string>('');
   const [filtrosActivos, setFiltrosActivos] = useState<FiltrosReserva>({});
 
-  const handleSelectEspacio = (espacioId: string | null) => {
+  const handleSelectEspacio = (espacioId: string | null, espacioNombre: string = '') => {
     setEspacioSeleccionado(espacioId);
+    setNombreEspacioSeleccionado(espacioNombre);
   };
 
   const handleFiltrosChange = (nuevosFiltros: FiltrosReserva) => {
@@ -47,7 +49,7 @@ const ReservaPage: React.FC = () => {
             {espacioSeleccionado && (
               <CalendarioSemanal
                 idEspacio={parseInt(espacioSeleccionado)}
-                nombreEspacio={espacioSeleccionado}
+                nombreEspacio={nombreEspacioSeleccionado}
               />
             )}
           </Col>

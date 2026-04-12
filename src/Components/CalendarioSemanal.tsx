@@ -3,6 +3,7 @@ import ConfirmacionReserva from './ConfirmacionReserva';
 import './CalendarioSemanal.css';
 import { API_BASE_URL } from "../Utils/apiBaseUrl";
 import { useGeneral } from "../Utils/GeneralContext";
+import { Alert } from 'react-bootstrap';
 
 interface Props {
   idEspacio: number;
@@ -45,6 +46,19 @@ interface ReservaSeleccionada {
   horaFin: string;
   calendarioId: number;
 }
+
+const formatearFechaLocalISO = (fecha: Date): string => {
+  const anio = fecha.getFullYear();
+  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+  const dia = String(fecha.getDate()).padStart(2, '0');
+  return `${anio}-${mes}-${dia}`;
+};
+
+const parsearFechaLocal = (fechaISO: string): Date => {
+  const [anio, mes, dia] = fechaISO.split('-').map(Number);
+  return new Date(anio, mes - 1, dia);
+};
+
 const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
   const { userEmail, userType } = useGeneral();
   const [semanaActual, setSemanaActual] = useState(0);
@@ -53,6 +67,9 @@ const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [reservaSeleccionada, setReservaSeleccionada] = useState<ReservaSeleccionada | null>(null);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(
+    null
+  );
 
   const horariosBase = ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00'];
 
@@ -71,7 +88,7 @@ const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
       const fecha = new Date(inicioSemana);
       fecha.setDate(inicioSemana.getDate() + i);
       fechasSemana.push({
-        fecha: fecha.toISOString().split('T')[0],
+        fecha: formatearFechaLocalISO(fecha),
         dia: diasSemana[i],
         fechaCompleta: fecha,
       });
@@ -170,10 +187,10 @@ const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
         //await cargarDisponibilidadSemana();
       } else {
         const error = await response.json();
-        alert(`Error calendario: ${error.error}`);
+        setFeedback({ type: 'error', text: `Error calendario: ${error.error}` });
       }
     } catch (err) {
-      alert('Error al crear el calendario');
+      setFeedback({ type: 'error', text: 'Error al crear el calendario' });
     }
   };
 
@@ -193,13 +210,13 @@ const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
         setShowModal(false);
         setReservaSeleccionada(null);
         await cargarDisponibilidadSemana();
-        alert('Reserva creada exitosamente');
+        setFeedback({ type: 'success', text: 'Se reservó el espacio correctamente.' });
       } else {
         const error = await response.json();
-        alert(`Error: ${error.error}`);
+        setFeedback({ type: 'error', text: `Error: ${error.error}` });
       }
     } catch (err) {
-      alert('Error al crear la reserva');
+      setFeedback({ type: 'error', text: 'Error al crear la reserva' });
     }
   };
 
@@ -243,6 +260,16 @@ const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
     <>
       <div className="calendario-semanal">
         <div className="calendario-header">
+          {feedback && (
+            <Alert
+              variant={feedback.type === 'success' ? 'success' : 'danger'}
+              dismissible
+              onClose={() => setFeedback(null)}
+              className="mb-3"
+            >
+              {feedback.text}
+            </Alert>
+          )}
           <div className="header-content">
             <div className="titulo-seccion">
               <span className="calendario-icon">📅</span>
@@ -293,7 +320,7 @@ const CalendarioSemanal: React.FC<Props> = ({ idEspacio, nombreEspacio }) => {
                   <div key={dia.fecha} className="dia-header">
                     <span className="dia-nombre">{dia.dia}</span>
                     <span className="dia-fecha">
-                      {new Date(dia.fecha).toLocaleDateString('es-ES', {
+                      {parsearFechaLocal(dia.fecha).toLocaleDateString('es-ES', {
                         day: 'numeric',
                         month: 'short',
                       })}

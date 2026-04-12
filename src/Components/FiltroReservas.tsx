@@ -6,7 +6,7 @@ import { API_BASE_URL } from "../Utils/apiBaseUrl";
 import { useGeneral } from "../Utils/GeneralContext";
 
 interface Props {
-  onSelectEspacio: (espacioId: string | null) => void;
+  onSelectEspacio: (espacioId: string | null, espacioNombre?: string) => void;
   onFiltrosChange?: (filtros: FiltrosReserva) => void;
 }
 
@@ -29,19 +29,25 @@ const FiltroReservas: React.FC<Props> = ({ onSelectEspacio, onFiltrosChange }) =
     const nuevosFiltros = { ...filtros, [campo]: valor };
     setFiltros(nuevosFiltros);
     onFiltrosChange?.(nuevosFiltros);
-    onSelectEspacio(null);
+    onSelectEspacio(null, '');
     setSelectedEspacio('');
   };
 
   const handleEspacioChange = (espacioId: string) => {
     setSelectedEspacio(espacioId);
-    onSelectEspacio(espacioId || null);
+    if (!espacioId) {
+      onSelectEspacio(null, '');
+      return;
+    }
+
+    const espacioSeleccionado = espacios.find((e) => e.id.toString() === espacioId);
+    onSelectEspacio(espacioId, espacioSeleccionado?.nombre || '');
   };
 
   const limpiarFiltros = () => {
     setFiltros({});
     setSelectedEspacio('');
-    onSelectEspacio(null);
+    onSelectEspacio(null, '');
     onFiltrosChange?.({});
   };
 

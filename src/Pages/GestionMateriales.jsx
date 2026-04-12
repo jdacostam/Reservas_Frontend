@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import { Col, Card, Badge, Button } from "react-bootstrap";
+import { Col, Card, Badge, Button, Alert } from "react-bootstrap";
 import FiltroGestionReservaMateriales from "../Components/FiltroGestionReservaMateriales";
 import "../Styles/Gestion.css";
 import { API_BASE_URL } from "../Utils/apiBaseUrl";
@@ -16,6 +16,7 @@ function GestionMateriales() {
   const [nuevoEstado, setNuevoEstado] = useState("");
   const [mostrarModalObs, setMostrarModalObs] = useState(false);
   const [textoObs, setTextoObs] = useState("");
+  const [feedback, setFeedback] = useState(null);
 
   const obtenerMateriales = async () => {
     try {
@@ -66,6 +67,11 @@ function GestionMateriales() {
               <strong>Instrucciones:</strong> Usa los filtros para buscar reservas de materiales por usuario, ID o estado.
             </h4>
             <FiltroGestionReservaMateriales onFiltrosChange={setFiltros} />
+            {feedback && (
+              <Alert variant={feedback.type} dismissible onClose={() => setFeedback(null)} className="mt-3">
+                {feedback.text}
+              </Alert>
+            )}
           </Col>
         </Row>
         <Row className="materiales-lista px-5">
@@ -203,10 +209,10 @@ function GestionMateriales() {
                       if (!response.ok) throw new Error("Error al actualizar el estado");
                       await obtenerMateriales();
                       setMostrarModal(false);
-                      alert("Estado actualizado correctamente");
+                      setFeedback({ type: "success", text: "Estado actualizado correctamente." });
                     } catch (error) {
                       console.error("Error actualizando estado:", error);
-                      alert("Error al actualizar el estado: " + error);
+                      setFeedback({ type: "danger", text: "Error al actualizar el estado." });
                     }
                   }}
                 >
@@ -249,10 +255,10 @@ function GestionMateriales() {
                       if (!res.ok) throw new Error("Error guardando observación");
                       await obtenerMateriales();
                       setMostrarModalObs(false);
-                      alert("Observación guardada correctamente");
+                      setFeedback({ type: "success", text: "Observación guardada correctamente." });
                     } catch (err) {
                       console.error("Error guardando observación:", err);
-                      alert("Error guardando observación: " + err);
+                      setFeedback({ type: "danger", text: "Error guardando observación." });
                     }
                   }}
                 >

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Row, Modal } from "react-bootstrap";
+import { Alert, Button, Col, Row, Modal } from "react-bootstrap";
 import Contenedor from "./Contenedor";
 import ComponenteReserva from "../../Components/ComponenteReserva";
 import { useGeneral } from "../../Utils/GeneralContext";
@@ -11,6 +11,9 @@ class ContenedorReservas extends Contenedor {
         const [reservas, setReservas] = useState<any[]>([]);
         const [handleShow, setTipoReserva] = useState<any>(null);
         const { userEmail } = useGeneral();
+        const [feedback, setFeedback] = useState<{ type: "success" | "danger"; text: string } | null>(null);
+        const [showDeleteModal, setShowDeleteModal] = useState(false);
+        const [reservaEliminar, setReservaEliminar] = useState<any>(null);
 
         useEffect(() => {
             if (userEmail) {
@@ -31,16 +34,11 @@ class ContenedorReservas extends Contenedor {
             }
         };
 
-        const handleDelete = async (reserva: any) => {
-          console.log("Eliminar reserva:", reserva);
-            const confirmDelete = window.confirm(
-                `¿Estás seguro de que quieres eliminar la reserva del espacio "${reserva.calendario.espacio.nombre}"?`
-            );
-            if (!confirmDelete) return;
-
+        const confirmarEliminarReserva = async () => {
+            if (!reservaEliminar) return;
             try {
                 const response = await fetch(
-                    `${API_BASE_URL}/reservas/eliminar/${reserva.id}`,
+                    `${API_BASE_URL}/reservas/eliminar/${reservaEliminar.id}`,
                     {
                         method: "DELETE",
                         headers: { "Content-Type": "application/json" },
@@ -49,9 +47,13 @@ class ContenedorReservas extends Contenedor {
                 if (!response.ok)
                     throw new Error("Error al eliminar la reserva");
 
-                setReservas(reservas.filter((r) => r.id !== reserva.id));
+                setReservas((prev) => prev.filter((r) => r.id !== reservaEliminar.id));
+                setFeedback({ type: "success", text: "Reserva eliminada correctamente." });
+                setShowDeleteModal(false);
+                setReservaEliminar(null);
             } catch (error) {
                 console.error("Error al eliminar la reserva:", error);
+                setFeedback({ type: "danger", text: "No fue posible eliminar la reserva." });
             }
         };
 
@@ -91,13 +93,20 @@ class ContenedorReservas extends Contenedor {
                 if (!response.ok)
                     throw new Error("Error al calificar el espacio");
 
-                // Actualizar el estado del material
+                // Actualiza la tarjeta para cambiar de "Calificar" a "Mostrar calificación" sin recargar.
+                setReservas((prev) =>
+                    prev.map((item) =>
+                        item.id === reserva.id ? { ...item, calificacion, comentario } : item
+                    )
+                );
                 setReserva((prev: any) => {
                     if (!prev) return null;
                     return { ...prev, calificacion, comentario };
                 });
+                setFeedback({ type: "success", text: "Calificación guardada correctamente." });
             } catch (error) {
                 console.error("Error al calificar el espacio:", error);
+                setFeedback({ type: "danger", text: "No fue posible guardar la calificación." });
             }
         };
 
@@ -108,6 +117,13 @@ class ContenedorReservas extends Contenedor {
                         Tus espacios reservados:
                     </h3>
                 </div>
+                {feedback && (
+                    <div className="px-5">
+                        <Alert variant={feedback.type} dismissible onClose={() => setFeedback(null)}>
+                            {feedback.text}
+                        </Alert>
+                    </div>
+                )}
                 <Row
                     className="align-items-center"
                     onClick={() => {
@@ -150,7 +166,10 @@ class ContenedorReservas extends Contenedor {
                                     <Button
                                         variant="danger"
                                         className="mt-2"
-                                        onClick={() => handleDelete(reserva)}
+                                        onClick={() => {
+                                            setReservaEliminar(reserva);
+                                            setShowDeleteModal(true);
+                                        }}
                                     >
                                         Cancelar
                                     </Button>
@@ -257,15 +276,12 @@ class ContenedorReservas extends Contenedor {
                         </Button>
                         <Button
                             variant="primary"
-                            onClick={() => {
-                                console.log("Calificación:", calificacion);
-                                console.log("Comentario:", comentario);
-                                setReserva(reserva);
-                                handleCalificar(
-                                    reserva,
-                                    calificacion,
-                                    comentario
-                                );
+                            onClick={async () => {
+                                if (calificacion === null) {
+                                    setFeedback({ type: "danger", text: "Selecciona una calificación antes de continuar." });
+                                    return;
+                                }
+                                await handleCalificar(reserva, calificacion, comentario);
                                 handleCloseCalificar();
                                 setCalificacion(null);
                                 setComentario("");
@@ -278,7 +294,7 @@ class ContenedorReservas extends Contenedor {
 
                 <Modal show={showCalificacion} onHide={handleCloseCalificacion}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Calificación del Material</Modal.Title>
+                        <Modal.Title>Calificación del Espacio</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <p>
@@ -309,6 +325,24 @@ class ContenedorReservas extends Contenedor {
                             onClick={handleCloseCalificacion}
                         >
                             Cerrar
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+
+                <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Cancelar reserva</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        ¿Estás seguro de que quieres eliminar la reserva del espacio {" "}
+                        <strong>{reservaEliminar?.calendario?.espacio?.nombre || "seleccionado"}</strong>?
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+                            Volver
+                        </Button>
+                        <Button variant="danger" onClick={confirmarEliminarReserva}>
+                            Eliminar
                         </Button>
                     </Modal.Footer>
                 </Modal>

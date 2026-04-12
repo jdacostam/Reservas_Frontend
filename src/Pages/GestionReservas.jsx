@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
-import { Col, Card, Badge, Button } from "react-bootstrap";
+import { Col, Card, Badge, Button, Alert } from "react-bootstrap";
 import FiltroGestionReservas from "../Components/FiltroGestionReservas";
 import "../Styles/Gestion.css";
 import { API_BASE_URL } from "../Utils/apiBaseUrl";
@@ -16,6 +16,7 @@ function GestionReserva() {
   const [nuevoEstado, setNuevoEstado] = useState("");
   const [mostrarModalObs, setMostrarModalObs] = useState(false);
   const [textoObs, setTextoObs] = useState("");
+  const [feedback, setFeedback] = useState(null);
 
   const obtenerReservas = async () => {
     try {
@@ -82,6 +83,11 @@ function GestionReserva() {
               <strong>Instrucciones:</strong> Usa los filtros para buscar reservas por usuario, ID o estado.
             </h4>
             <FiltroGestionReservas onFiltrosChange={setFiltros} estados={["Activa", "Completada"]} />
+            {feedback && (
+              <Alert variant={feedback.type} dismissible onClose={() => setFeedback(null)} className="mt-3">
+                {feedback.text}
+              </Alert>
+            )}
           </Col>
         </Row>
         <Row className="materiales-lista px-5">
@@ -210,10 +216,10 @@ function GestionReserva() {
                       if (!response.ok) throw new Error("Error al actualizar el estado");
                       await obtenerReservas();
                       setMostrarModal(false);
-                      alert("Estado actualizado correctamente");
+                      setFeedback({ type: "success", text: "Estado actualizado correctamente." });
                     } catch (error) {
                       console.error("Error actualizando estado:", error);
-                      alert("Error al actualizar el estado: " + error);
+                      setFeedback({ type: "danger", text: "Error al actualizar el estado." });
                     }
                   }}
                 >
@@ -256,10 +262,10 @@ function GestionReserva() {
                       if (!res.ok) throw new Error("Error guardando observación");
                       await obtenerReservas();
                       setMostrarModalObs(false);
-                      alert("Observación guardada correctamente");
+                      setFeedback({ type: "success", text: "Observación guardada correctamente." });
                     } catch (err) {
                       console.error("Error guardando observación:", err);
-                      alert("Error guardando observación: " + err);
+                      setFeedback({ type: "danger", text: "Error guardando observación." });
                     }
                   }}
                 >

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import Alert from "react-bootstrap/Alert";
 import Footer from "../Components/Footer";
 import Header from "../Classes/Header/Header";
 import ThemeSwitcher from "../Components/ThemeSwitcher";
@@ -17,6 +18,7 @@ function ReservaMaterial() {
   const [materialSeleccionado, setMaterialSeleccionado] = useState("");
   const [cantidadSeleccionada, setCantidad] = useState(null);
   const [fecha, setFecha] = useState("");
+  const [feedback, setFeedback] = useState(null);
 
   useEffect(() => {
     // Cargar materiales desde la API
@@ -28,7 +30,7 @@ function ReservaMaterial() {
 
   const handleConfirmarReservaMaterial = async () => {
     if (!materialSeleccionado || !fecha || !cantidadSeleccionada) {
-      alert("Por favor complete todos los campos para realizar la reserva");
+      setFeedback({ type: "danger", text: "Por favor completa todos los campos para realizar la reserva." });
       return;
     }
 
@@ -47,18 +49,15 @@ function ReservaMaterial() {
       });
 
       if (response.ok) {
-        // setShowModal(false);
-        alert("Reserva creada exitosamente");
-        window.location.reload();
-        // await cargarDisponibilidadSemana();
+        setFeedback({ type: "success", text: "Reserva creada exitosamente." });
       } else {
         const error = await response.json();
-        alert(`Error: ${error.error}`);
+        setFeedback({ type: "danger", text: `Error: ${error.error}` });
       }
     } catch (err) {
-      alert("Error al crear la reserva:" + err);
+      setFeedback({ type: "danger", text: "Error al crear la reserva." });
     }
-    setReservaSeleccionada("");
+    setMaterialSeleccionado("");
     setCantidad(null);
     setFecha("");
   };
@@ -80,6 +79,11 @@ function ReservaMaterial() {
       <Row className="px-5">
 
         <Col className="px-5" md={{ span: 6, offset: 3 }}>
+          {feedback && (
+            <Alert variant={feedback.type} dismissible onClose={() => setFeedback(null)}>
+              {feedback.text}
+            </Alert>
+          )}
           <div className="layout-container" >
             <Select
               options={materiales.map((mat) => ({
