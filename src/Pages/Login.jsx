@@ -50,7 +50,7 @@ function Login() {
         setShowAlert(fachada.cambioMostrarAlerta());
       } else {
         cliente.email = emailAdapter.convertirEmailAMinuscula(cliente.email);
-        const res = await fetch(`${API_BASE_URL}/usuario/Login`, {
+        const res = await fetch(`${API_BASE_URL}/usuario/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(cliente),
@@ -58,14 +58,18 @@ function Login() {
 
         if (res.ok) {
           const data = await res.json();
-          // console.log(data);
+          //console.log(data)
+          //console.log(data.user);
+          //console.log(Array.isArray(data.user) && data.user.length > 0);
 
           if (data.message) {
+            console.log(data.message)
             setAlertText(data.message);
             setAlertState(fachada.cambioEstadoDeAlerta(1));
             setShowAlert(fachada.cambioMostrarAlerta());
-          } else if (Array.isArray(data.user) && data.user.length > 0) {
-            const { email, nombre, tipo } = data.user[0];
+          } else if (data.user) {
+            const { email, nombre, tipo } = data.user;
+            console.log(email, nombre, tipo);
 
             if (!email || !nombre || !tipo) {
               setAlertText("Correo no registrado");
@@ -184,6 +188,11 @@ function Login() {
               value={cliente.password}
               data-testid="Contraseña"
             />
+            <div className="text-end mt-2" style={{ width: "325px", margin: "0 auto" }}>
+              <Link to="/restablecer-password" style={{ color: "#667eea", textDecoration: "none", fontWeight: "600", fontSize: "0.9rem" }}>
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
           </Form.Group>
           {/* <Form.Group className="mb-3" controlId="formBasicCheckbox">
           <Form.Check type="checkbox" label="Remember me" />

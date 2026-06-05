@@ -7,21 +7,28 @@ const LandingPage = () => {
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem('landing-theme');
+    const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
       setDarkMode(true);
       document.body.classList.add('dark-mode');
+      document.documentElement.setAttribute('data-bs-theme', 'dark');
+    } else {
+      setDarkMode(false);
+      document.body.classList.remove('dark-mode');
+      document.documentElement.setAttribute('data-bs-theme', 'light');
     }
   }, []);
 
   const toggleTheme = () => {
-    setDarkMode(!darkMode);
-    if (!darkMode) {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    const themeStr = newDarkMode ? 'dark' : 'light';
+    localStorage.setItem('theme', themeStr);
+    document.documentElement.setAttribute('data-bs-theme', themeStr);
+    if (newDarkMode) {
       document.body.classList.add('dark-mode');
-      localStorage.setItem('landing-theme', 'dark');
     } else {
       document.body.classList.remove('dark-mode');
-      localStorage.setItem('landing-theme', 'light');
     }
   };
 

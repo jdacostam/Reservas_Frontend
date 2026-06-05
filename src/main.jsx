@@ -13,6 +13,7 @@ import {
 import LandingPage from "./Pages/LandingPage.jsx";
 import Login from "./Pages/Login.jsx";
 import Registro from "./Pages/Registro.jsx";
+import RestablecerPassword from "./Pages/RestablecerPassword.jsx";
 import Reserva from "./Pages/Reserva.tsx";
 import ReservaMaterial from "./Pages/ReservaMaterial.jsx";
 import MisReservas from "./Pages/MisReservas.jsx";
@@ -36,6 +37,7 @@ const router = createBrowserRouter(
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/registro" element={<Registro />} />
+        <Route path="/restablecer-password" element={<RestablecerPassword />} />
       </Route>
 
       <Route element={<ProtectedRoute />}>

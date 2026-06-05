@@ -173,3 +173,33 @@
     flex: 1;
   }
 }
+
+/* Soporte para Modo Oscuro ([data-bs-theme="dark"]) */
+[data-bs-theme="dark"] .material-card-horizontal {
+  background: rgba(30, 30, 38, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-bs-theme="dark"] .material-title {
+  color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .input-top,
+[data-bs-theme="dark"] .input-bottom {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+  box-shadow: none !important;
+}
+
+[data-bs-theme="dark"] .input-top label,
+[data-bs-theme="dark"] .input-bottom label {
+  color: #cbd5e1 !important;
+}
+
+[data-bs-theme="dark"] .number,
+[data-bs-theme="dark"] .dateMaterial {
+  background-color: #1e1e24 !important;
+  color: #f8f9fa !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+

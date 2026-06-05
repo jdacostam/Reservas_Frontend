@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom';
 import '../../../Styles/SidebarMenu.css';
 import { useGeneral } from '../../../Utils/GeneralContext';
@@ -10,6 +10,8 @@ import {
   faSignOut,
   faStar,
   faArrowPointer,
+  faSun,
+  faMoon,
 } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
@@ -21,6 +23,27 @@ const ClienteHeaderStrategy: React.FC<Props> = ({ userName }) => {
   const location = useLocation();
   const { logout } = useGeneral();
   const [isOpen, setIsOpen] = useState(false);
+
+  const [theme, setTheme] = useState(() => {
+    const stored = localStorage.getItem("theme");
+    if (stored) return stored;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-bs-theme", theme);
+    if (theme === "dark") {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+  };
 
   const toggleMenu = () => setIsOpen((prev) => !prev);
 
@@ -87,6 +110,13 @@ const ClienteHeaderStrategy: React.FC<Props> = ({ userName }) => {
             >
               <FontAwesomeIcon icon={faCartShopping} /> Mis Reservas
             </NavLink>
+          </li>
+
+          <li className="theme-toggle-li">
+            <button className="theme-toggle-btn" onClick={toggleTheme}>
+              <FontAwesomeIcon icon={theme === 'dark' ? faSun : faMoon} />
+              {theme === 'dark' ? 'Modo Claro' : 'Modo Oscuro'}
+            </button>
           </li>
 
           <li onClick={handleLogout}>

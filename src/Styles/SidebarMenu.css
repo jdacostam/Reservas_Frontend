@@ -116,3 +116,43 @@
   z-index: 999;
   transition: opacity 0.3s ease;
 }
+
+/* Estilo para el botón alternador de temas */
+.sidebar ul li .theme-toggle-btn {
+  width: 100%;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  outline: none;
+}
+
+.sidebar ul li .theme-toggle-btn svg {
+  margin-right: 15px;
+  width: 20px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.sidebar ul li .theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateX(5px);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar ul li .theme-toggle-btn:hover svg {
+  transform: scale(1.1);
+  color: #f1c40f;
+}
+

@@ -100,8 +100,8 @@ export default function UserProfile() {
     >
       {/* Hero Card con perfil */}
       <div
+        className="profile-hero-card"
         style={{
-          background: 'rgba(255, 255, 255, 0.95)',
           borderRadius: '30px',
           padding: '40px',
           marginBottom: '30px',
@@ -180,10 +180,10 @@ export default function UserProfile() {
               }}
             >
               <h1
+                className="profile-name-title"
                 style={{
                   fontSize: '2rem',
                   fontWeight: '700',
-                  color: '#2d3748',
                   margin: 0,
                 }}
               >
@@ -215,11 +215,11 @@ export default function UserProfile() {
               {usuario ? usuario.tipo : ''}
             </p>
             <div
+              className="profile-email-container"
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                color: '#718096',
                 fontSize: '0.95rem',
               }}
             >
@@ -318,8 +318,8 @@ export default function UserProfile() {
 
         {/* Card de Fecha */}
         <div
+          className="profile-date-card"
           style={{
-            background: 'rgba(255, 255, 255, 0.95)',
             borderRadius: '25px',
             padding: '30px',
             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
@@ -366,9 +366,9 @@ export default function UserProfile() {
             Fecha Actual
           </h3>
           <p
+            className="profile-date-text"
             style={{
               fontSize: '1.1rem',
-              color: '#2d3748',
               fontWeight: '600',
               margin: 0,
               textTransform: 'capitalize',
@@ -381,18 +381,18 @@ export default function UserProfile() {
 
       {/* Quick Stats */}
       <div
+        className="profile-stats-card"
         style={{
-          background: 'rgba(255, 255, 255, 0.95)',
           borderRadius: '25px',
           padding: '30px',
           boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
         }}
       >
         <h3
+          className="profile-stats-title"
           style={{
             fontSize: '1.3rem',
             fontWeight: '700',
-            color: '#2d3748',
             marginBottom: '25px',
             display: 'flex',
             alignItems: 'center',
@@ -429,9 +429,9 @@ export default function UserProfile() {
               Miembro Desde
             </p>
             <p
+              className="profile-stat-value-text"
               style={{
                 fontSize: '1.4rem',
-                color: '#2d3748',
                 fontWeight: '700',
                 margin: 0,
               }}
@@ -460,9 +460,9 @@ export default function UserProfile() {
               Estado
             </p>
             <p
+              className="profile-stat-value-text"
               style={{
                 fontSize: '1.4rem',
-                color: '#2d3748',
                 fontWeight: '700',
                 margin: 0,
               }}
