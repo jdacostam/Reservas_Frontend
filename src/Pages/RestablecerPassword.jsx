@@ -83,7 +83,7 @@ function RestablecerPassword() {
       const payload = {
         email: emailLower,
         cedula,
-        password,
+        nuevaPassword: password,
       };
 
       if (import.meta.env.DEV) {
