@@ -1,0 +1,139 @@
+/* ── Wrapper principal ── */
+.laborista-wrapper {
+  min-height: 85vh;
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ── Hero card (perfil) ── */
+.laborista-hero-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 30px;
+  padding: 40px;
+  margin-bottom: 30px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+
+.laborista-hero-name {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.laborista-hero-email {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #718096;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+/* ── Grid de acciones ── */
+.laborista-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* ── Card de Fecha ── */
+.laborista-date-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 25px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  transition: background 0.3s ease;
+}
+
+.laborista-date-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #667eea;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.laborista-date-value {
+  font-size: 1.1rem;
+  color: #2d3748;
+  font-weight: 600;
+  margin: 0;
+  text-transform: capitalize;
+  transition: color 0.3s ease;
+}
+
+/* ── Panel informativo ── */
+.laborista-info-panel {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 25px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  transition: background 0.3s ease;
+}
+
+.laborista-info-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: color 0.3s ease;
+}
+
+.laborista-info-desc {
+  color: #4a5568;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+/* ══════════════════════════════════
+   Dark mode overrides
+══════════════════════════════════ */
+.dark-mode .laborista-hero-card {
+  background: rgba(22, 33, 62, 0.95) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.dark-mode .laborista-hero-name {
+  color: #e0e6f0 !important;
+}
+
+.dark-mode .laborista-hero-email {
+  color: #a8b9cc !important;
+}
+
+.dark-mode .laborista-date-card {
+  background: rgba(22, 33, 62, 0.95) !important;
+  border-color: rgba(79, 140, 255, 0.25) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .laborista-date-value {
+  color: #e0e6f0 !important;
+}
+
+.dark-mode .laborista-info-panel {
+  background: rgba(22, 33, 62, 0.95) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.dark-mode .laborista-info-title {
+  color: #e0e6f0 !important;
+}
+
+.dark-mode .laborista-info-desc {
+  color: #a8b9cc !important;
+}

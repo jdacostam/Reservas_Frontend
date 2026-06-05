@@ -409,3 +409,100 @@
     text-align: center;
   }
 }
+
+/* ══════════════════════════════════
+   Dark mode overrides
+══════════════════════════════════ */
+
+/* Contenedor principal */
+.dark-mode .filtro-reservas {
+  background: rgba(22, 33, 62, 0.97);
+  border-color: rgba(79, 140, 255, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* Glow decorativo de fondo */
+.dark-mode .filtro-reservas::before {
+  background: linear-gradient(135deg, rgba(79, 140, 255, 0.06) 0%, rgba(118, 75, 162, 0.06) 100%);
+}
+
+/* Header y subtítulo */
+.dark-mode .filtro-header {
+  color: #e0e6f0;
+}
+
+.dark-mode .filtro-subtitle {
+  color: #8899aa;
+}
+
+/* Labels de filtro */
+.dark-mode .filter-label {
+  color: #c8d8e8;
+}
+
+/* Opciones de filtro (inactivas) */
+.dark-mode .filter-option {
+  background: #1a2a40 !important;
+  border-color: rgba(79, 140, 255, 0.25) !important;
+  color: #c8d8e8 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .filter-option:hover {
+  background: #1e3050 !important;
+  border-color: rgba(79, 140, 255, 0.5) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Opción activa — mantiene el gradiente de marca */
+.dark-mode .filter-option.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border-color: transparent !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.35);
+}
+
+/* Select moderno */
+.dark-mode .modern-select {
+  background: #1a2a40;
+  color: #e0e6f0;
+  border-color: rgba(79, 140, 255, 0.25);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .modern-select:hover {
+  border-color: rgba(79, 140, 255, 0.5);
+}
+
+.dark-mode .modern-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .modern-select option {
+  background: #1a2a40;
+  color: #e0e6f0;
+}
+
+.dark-mode .select-arrow {
+  color: #8899aa;
+}
+
+/* Estado de carga */
+.dark-mode .loading-state {
+  background: #1a2a40;
+  color: #c8d8e8;
+  border-color: rgba(79, 140, 255, 0.25);
+}
+
+.dark-mode .loading-spinner {
+  border-color: rgba(79, 140, 255, 0.2);
+  border-top-color: #667eea;
+}
+
+/* Estado de error */
+.dark-mode .error-state {
+  background: rgba(229, 62, 62, 0.1);
+  border-color: rgba(229, 62, 62, 0.4);
+  color: #fc8181;
+}

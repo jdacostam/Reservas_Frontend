@@ -104,28 +104,19 @@ function GestionReserva() {
                 </Card.Header>
                 <Card.Body>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    <div style={{
-                      background: "#e3edff",
-                      borderRadius: "50%",
-                      width: "48px",
-                      height: "48px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "1.7rem"
-                    }}>
+                    <div className="card-icon-circle">
                       🗓️
                     </div>
                     <div>
-                      <div style={{ fontWeight: 600, color: "#4f8cff" }}>{reserva.calendario.espacio.nombre}</div>
-                      <div style={{ fontSize: "0.95rem", color: "#2d3a4b" }}>
+                      <div className="card-item-name">{reserva.calendario.espacio.nombre}</div>
+                      <div className="card-item-date">
                         {reserva.calendario.fecha} <br />
                         {reserva.calendario.horaInicio} - {reserva.calendario.horaFin}
                       </div>
                     </div>
                   </div>
                   <hr />
-                  <div style={{ fontSize: "0.97rem" }}>
+                  <div className="card-info-text">
                     <strong>Usuario:</strong> {reserva.usuario.nombre} <br />
                     <strong>Email:</strong> {reserva.usuario.email}
                   </div>

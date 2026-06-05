@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import '../Styles/ClienteProfile.css';
+import '../Styles/LaboristaProfile.css';
 import { useNavigate } from 'react-router-dom';
 import { useGeneral } from "../Utils/GeneralContext";
 
@@ -83,26 +84,9 @@ export default function LaboristaProfile() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: '85vh',
-        padding: '20px',
-        maxWidth: '1400px',
-        margin: '0 auto',
-      }}
-    >
+    <div className="laborista-wrapper">
       {/* Hero Card con perfil */}
-      <div
-        style={{
-          background: 'rgba(255, 255, 255, 0.95)',
-          borderRadius: '30px',
-          padding: '40px',
-          marginBottom: '30px',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
+      <div className="laborista-hero-card">
         {/* Decorative gradient background */}
         <div
           style={{
@@ -172,14 +156,7 @@ export default function LaboristaProfile() {
                 flexWrap: 'wrap',
               }}
             >
-              <h1
-                style={{
-                  fontSize: '2rem',
-                  fontWeight: '700',
-                  color: '#2d3748',
-                  margin: 0,
-                }}
-              >
+              <h1 className="laborista-hero-name">
                 {usuario ? usuario.nombre : 'Cargando...'}
               </h1>
               <span
@@ -207,15 +184,7 @@ export default function LaboristaProfile() {
             >
               {usuario ? usuario.tipo : ''}
             </p>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                color: '#718096',
-                fontSize: '0.95rem',
-              }}
-            >
+            <div className="laborista-hero-email">
               <svg
                 style={{ width: '18px', height: '18px' }}
                 fill="none"
@@ -236,14 +205,7 @@ export default function LaboristaProfile() {
       </div>
 
       {/* Grid de acciones rápidas */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '20px',
-          marginBottom: '30px',
-        }}
-      >
+      <div className="laborista-actions-grid">
         {/* Card de Gestión de Reservas */}
         <div
           style={{
@@ -377,15 +339,7 @@ export default function LaboristaProfile() {
         </div>
 
         {/* Card de Fecha */}
-        <div
-          style={{
-            background: 'rgba(255, 255, 255, 0.95)',
-            borderRadius: '25px',
-            padding: '30px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
-            border: '1px solid rgba(102, 126, 234, 0.2)',
-          }}
-        >
+        <div className="laborista-date-card">
           <div
             style={{
               width: '50px',
@@ -413,63 +367,18 @@ export default function LaboristaProfile() {
               />
             </svg>
           </div>
-          <h3
-            style={{
-              fontSize: '0.85rem',
-              fontWeight: '600',
-              color: '#667eea',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              marginBottom: '8px',
-            }}
-          >
-            Fecha Actual
-          </h3>
-          <p
-            style={{
-              fontSize: '1.1rem',
-              color: '#2d3748',
-              fontWeight: '600',
-              margin: 0,
-              textTransform: 'capitalize',
-            }}
-          >
-            {currentDate}
-          </p>
+          <h3 className="laborista-date-label">Fecha Actual</h3>
+          <p className="laborista-date-value">{currentDate}</p>
         </div>
       </div>
 
       {/* Panel informativo */}
-      <div
-        style={{
-          background: 'rgba(255, 255, 255, 0.95)',
-          borderRadius: '25px',
-          padding: '30px',
-          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.15)',
-        }}
-      >
-        <h3
-          style={{
-            fontSize: '1.3rem',
-            fontWeight: '700',
-            color: '#2d3748',
-            marginBottom: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-          }}
-        >
+      <div className="laborista-info-panel">
+        <h3 className="laborista-info-title">
           <span>👋</span>
           Bienvenido al Panel de Administración
         </h3>
-        <p
-          style={{
-            color: '#4a5568',
-            fontSize: '1rem',
-            lineHeight: '1.7',
-            margin: 0,
-          }}
-        >
+        <p className="laborista-info-desc">
           Desde este panel puedes gestionar todas las operaciones del sistema. Utiliza las tarjetas
           superiores para acceder rápidamente a las funciones principales.
         </p>
