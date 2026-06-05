@@ -436,7 +436,7 @@ export default function UserProfile() {
                 margin: 0,
               }}
             >
-              2025
+              2026
             </p>
           </div>
           <div

@@ -161,8 +161,8 @@ function Registro() {
       >
         {alertText}
       </Alert>
-      <div className="text-center content">
-        <Form.Group className="mb-4 mt-5 pt-5" controlId="formBasicTipo">
+      <div className="text-center content" style={{ paddingTop: "15rem" }}>
+        <Form.Group className="mb-1 mt-5 pt-5" controlId="formBasicTipo">
           <Image className="logoCentral" src="/logo.png" fluid width="22%" />
         </Form.Group>
         <Form onSubmit={clientSubmit} data-testid="Form">
@@ -177,7 +177,6 @@ function Registro() {
               <option value="Estudiante">Estudiante</option>
               <option value="Profesor">Profesor</option>
               <option value="Externo">Externo</option>
-              <option value="Laborista">Laborista</option>
             </Form.Select>
             <Form.Text>¿Cuál es tu rol dentro del sistema?</Form.Text>
           </Form.Group>

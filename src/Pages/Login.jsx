@@ -139,9 +139,9 @@ function Login() {
       >
         {alertText}
       </Alert>
-      <div className="text-center content">
+      <div className="text-center content" style={{ paddingTop: "7rem" }}>
         <h1 className="prueba">Reservas UD</h1>
-        <Form.Group className="mb-4 mt-4" controlId="formBasicTipo">
+        <Form.Group className="mb-0 mt-0" controlId="formBasicTipo">
           <Image className="logoCentral" src="/logo.png" fluid width="22%" />
         </Form.Group>
         <Form onSubmit={handleFormSubmit} data-testid="Form">
